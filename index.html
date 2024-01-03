@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NBA Guessing Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</head>
+<body style="background-color: black; color: white;">
+    <nav class="navbar bg-body-tertiary" data-bs-theme="dark">
+        <div class="container-fluid">
+          <img src="bars-solid.svg" alt="" style="width: 2em;">
+          <a href="register.html" class="navbar-brand active">Profile</a>
+        </div>
+    </nav>
+    <div class="game text-center p-2 position-relative top-50">
+        <input type="text" id="searchBar" class="form-control w-25 m-auto m-2" placeholder="Type a player's name" aria-describedby="addon-wrapping">
+        <ul id="suggestions" class="form-control w-25 m-auto m-2"></ul>
+        <button class="btn btn-success m-3" onclick="fetchPlayers()">Submit</button>
+        <div class="guesses">
+          
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Player Name</th>
+                <th scope="col">Team Name</th>
+                <th scope="col">Conference</th>
+                <th scope="col">Division</th>
+                <th scope="col">Position</th>
+                <th scope="col">Height(inch)</th>
+                <th scope="col">Number</th>
+            </tr>
+        </thead>
+        <tbody id="playerData">
+            <!-- Player data will be dynamically inserted here -->
+        </tbody>
+    </table>
+  <script src="script.js"></script>
+</body>
+</html>

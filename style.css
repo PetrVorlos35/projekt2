@@ -1,0 +1,46 @@
+/* body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  #searchBar {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    /* margin-bottom: 20px; Add some space between the search bar and suggestions */
+  /* } */
+   
+  #suggestions {
+    color: white;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #000000;
+    border: 1px solid #ccc;
+    width: 300px;
+    max-height: 150px; /* Limit the height of the suggestions list */
+    overflow-y: auto; /* Add scrollbar if necessary */
+  }
+  
+  #suggestions li {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  #suggestions li:hover {
+    background-color: #ffffff;
+    color: black;
+  }
+  
+
+  
