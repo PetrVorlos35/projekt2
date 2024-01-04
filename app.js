@@ -2,7 +2,6 @@ const express = require('express');
 const xlsx = require('xlsx');
 const cors = require('cors');
 
-// Function to read spreadsheet and parse the needed columns
 function readSpreadsheet(filePath) {
   const workbook = xlsx.readFile(filePath);
   const sheetName = workbook.SheetNames[0];
@@ -15,13 +14,11 @@ function readSpreadsheet(filePath) {
   }));
 }
 
-const players = readSpreadsheet('players.xlsx'); // Ensure the spreadsheet is in the same directory as your app.js
+const players = readSpreadsheet('players.xlsx'); 
 
 const app = express();
 app.use(cors());
 
-// ... Rest of the server code will go here
-// Define the search endpoint
 app.get('/search', (req, res) => {
     const searchTerm = req.query.term ? req.query.term.toLowerCase() : '';
     const filteredPlayers = players.filter(player =>
@@ -30,9 +27,6 @@ app.get('/search', (req, res) => {
     res.json(filteredPlayers);
   });
 
-  // ... Rest of the server code
-
-// Define the random player selection endpoint
 app.get('/random', (req, res) => {
     const randomIndex = Math.floor(Math.random() * players.length);
     const randomPlayer = players[randomIndex];
@@ -40,11 +34,6 @@ app.get('/random', (req, res) => {
     res.json(randomPlayer);
   });
   
-  
-  // ... Rest of the server code
-  
-  
-  // Set the port and start the server
-  const PORT = 3000; // You can use any available port
+  const PORT = 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   
