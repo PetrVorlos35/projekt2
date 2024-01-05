@@ -115,3 +115,6 @@ async function fetchSinglePlayer(playerName) {
       console.error('Error:', error);
     }
   }
+
+
+  

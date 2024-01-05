@@ -33,7 +33,7 @@ app.get('/random', (req, res) => {
     console.log('Randomly selected player:', randomPlayer);
     res.json(randomPlayer);
   });
-  
+
   const PORT = 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   
