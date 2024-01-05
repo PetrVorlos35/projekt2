@@ -5,18 +5,21 @@ document.getElementById('searchBar').addEventListener('input', function() {
         .then(response => response.json())
         .then(players => {
           const suggestionsList = document.getElementById('suggestions');
+          suggestionsList.style.border = 'solid white';
           suggestionsList.innerHTML = players.map(player => `<li>${player.Player}</li>`).join('');
 
           suggestionsList.querySelectorAll('li').forEach(suggestion => {
             suggestion.addEventListener('click', function() {
               document.getElementById('searchBar').value = this.textContent;
               suggestionsList.innerHTML = ''; 
+              suggestionsList.style.border = 'none';
             });
           });
         })
         .catch(error => console.error('Error:', error));
     } else {
       document.getElementById('suggestions').innerHTML = '';
+      document.getElementById('suggestions').style.border = 'none';
     }
   });
 
@@ -25,6 +28,7 @@ function getRandomPlayer() {
   fetch('http://localhost:3000/random')
     .then(response => response.json())
     .then(randomPlayer => {
+        randomPlayerName = randomPlayer.Player;
       console.log(`Randomly selected player: ${randomPlayer.Player}, Number: ${randomPlayer.No}, Height: ${randomPlayer.Ht}`);
     })
     .catch(error => console.error('Error:', error));
@@ -37,18 +41,35 @@ var nameToFind = "";
 const pageSize = 25;
 let page = 1;
 let foundPlayers = [];
+let randomPlayerName;
 
 
+let guesses = 0;
+var userinput = document.getElementById("searchBar");
 function getInput() {
-    var userinput = document.getElementById("searchBar").value;
-    return userinput;
+    userinput.value = '';
+    userinput.placeholder = `Guess ${guesses + 1} of 8`;
 }
 
 let height = '';
 let No = '';
+var guessBtn = document.getElementById('guessBtn')
+
+function chechWin(playerName) {
+    console.log(randomPlayerName);
+    console.log(playerName);
+    if (randomPlayerName == playerName) {
+        guessBtn.disabled = true;
+        userinput.disabled = true;
+        userinput.placeholder = 'Vyhrál jsi!!';
+        alert('Vyhrál jsi! počet pokusů: ' + guesses);
+    }
+}
 
 async function fetchSinglePlayer(playerName) {
     const apiUrl = `https://www.balldontlie.io/api/v1/players?search=${playerName}&per_page=1`;
+
+    
 
     try {
       const response = await axios.get(apiUrl);
@@ -89,6 +110,13 @@ async function fetchSinglePlayer(playerName) {
                 No = playerData.No;
                 row.insertCell(5).innerHTML = height;
                 row.insertCell(6).innerHTML = No;
+                guesses++;
+                getInput();
+                if (guesses > 8) {
+                    return alert("Konec hry, vyčerpal jsi pokusy");
+                }else{
+                    chechWin(playerName);
+                }
                 } else {
                 console.log('No player data found.');
                 }
@@ -117,4 +145,3 @@ async function fetchSinglePlayer(playerName) {
   }
 
 
-  

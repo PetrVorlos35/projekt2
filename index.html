@@ -17,30 +17,37 @@
         </div>
     </nav>
     <div class="game text-center p-2 position-relative top-50">
-        <input type="text" id="searchBar" class="form-control w-25 m-auto m-2" placeholder="Type a player's name" aria-describedby="addon-wrapping">
-        <ul id="suggestions" class="form-control w-25 m-auto m-2"></ul>
-        <button class="btn btn-success m-3" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
+        <div class="d-flex flex-column align-items-center">
+            <input type="text" id="searchBar" class="form-control w-25 m-auto m-2 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
+            <ul id="suggestions" class="form-control w-25 m-auto m-2 position-absolute" style="top: 46%; z-index: 100; border: none;"></ul>
+        </div>
+        <button id="guessBtn" class="btn btn-success m-3" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
         <div class="guesses">
           
         </div>
-      </div>
+    </div>
+    
+    
+    
 
-      <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Player Name</th>
-                <th scope="col">Team Name</th>
-                <th scope="col">Conference</th>
-                <th scope="col">Division</th>
-                <th scope="col">Position</th>
-                <th scope="col">Height</th>
-                <th scope="col">Number</th>
-            </tr>
-        </thead>
-        <tbody id="playerData">
-            <!-- Player data will be dynamically inserted here -->
-        </tbody>
-    </table>
+      <div class="container w-50">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Player Name</th>
+                    <th scope="col">Team Name</th>
+                    <th scope="col">Conference</th>
+                    <th scope="col">Division</th>
+                    <th scope="col">Position</th>
+                    <th scope="col">Height</th>
+                    <th scope="col">Number</th>
+                </tr>
+            </thead>
+            <tbody id="playerData">
+                <!-- Player data will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
   <script src="script.js"></script>
 </body>
 </html>
