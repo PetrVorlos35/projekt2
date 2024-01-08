@@ -3,8 +3,60 @@ const xlsx = require('xlsx');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
-const bcrypt = require('bcrypt');
-const session = require('express-session');
+
+const app = express();
+
+app.use(express.static('public'));
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'projekt3', 
+  });
+  
+  db.connect((err) => {
+    if (err) {
+      console.error('Database connection failed: ' + err.stack);
+      return;
+    }
+    console.log('Connected to the database');
+  });
+  
+  // Middleware to parse form data
+  app.use(bodyParser.urlencoded({ extended: true }));
+  
+// Registration endpoint
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+  
+    const sql = 'INSERT INTO Uzivatele (Username, Heslo) VALUES (?, ?)';
+    db.query(sql, [username, password], (err, result) => {
+        if (err) throw err;
+        console.log('User registered successfully');
+        res.redirect('/index.html');
+    });
+  });
+
+// Login endpoint
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+  
+    // Query to check if the user exists and the password is correct
+    const sql = 'SELECT * FROM Uzivatele WHERE Username = ? AND Heslo = ?';
+    db.query(sql, [username, password], (err, results) => {
+      if (err) throw err;
+  
+      // Check if user exists
+      if (results.length > 0) {
+        console.log('Login successful');
+        res.redirect('/index.html');
+      } else {
+        console.log('Incorrect Username and/or Password!');
+        res.send('Incorrect Username and/or Password! <button onclick="document.location=`login.html`">Back</button>');
+      }
+    });
+  });
 
 function readSpreadsheet(filePath) {
   const workbook = xlsx.readFile(filePath);
@@ -18,9 +70,8 @@ function readSpreadsheet(filePath) {
   }));
 }
 
-const players = readSpreadsheet('players.xlsx'); 
+const players = readSpreadsheet('public/players.xlsx'); 
 
-const app = express();
 app.use(cors());
 
 app.get('/search', (req, res) => {
@@ -38,74 +89,7 @@ app.get('/random', (req, res) => {
     res.json(randomPlayer);
   });
 
-  const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'projekt3'
-});
-
-connection.connect();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
-app.use(session({
-    secret: 'vorel',
-    resave: false,
-    saveUninitialized: true
-}));
-
-  // Routes
-  app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    connection.query(
-        'INSERT INTO Uzivatele (username, password) VALUES (?, ?)',
-        [username, hashedPassword],
-        (error, results) => {
-            if (error) {
-                return res.status(500).send('Error registering new user');
-            }
-            res.redirect('/login.html');
-        }
-    );
-});
   
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
-    connection.query(
-        'SELECT * FROM Uzivatele WHERE username = ?',
-        [username],
-        async (error, results) => {
-            if (error) {
-                return res.status(500).send('Error logging in');
-            }
-            if (results.length > 0) {
-                const comparison = await bcrypt.compare(password, results[0].password);
-                if (comparison) {
-                    req.session.loggedin = true;
-                    req.session.username = username;
-                    res.redirect('/home');  // Redirect to a home page or dashboard
-                } else {
-                    res.send('Incorrect Username and/or Password!');
-                }
-            } else {
-                res.send('Incorrect Username and/or Password!');
-            }          
-        }
-    );
-});
-
-app.get('/home', (req, res) => {
-    if (req.session.loggedin) {
-        res.send('Welcome back, ' + req.session.username + '!');
-    } else {
-        res.send('Please login to view this page!');
-    }
-    res.end();
-});
 
   const PORT = 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
