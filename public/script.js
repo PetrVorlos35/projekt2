@@ -68,9 +68,6 @@ function chechWin(playerName) {
 
 async function fetchSinglePlayer(playerName) {
     const apiUrl = `https://www.balldontlie.io/api/v1/players?search=${playerName}&per_page=1`;
-
-    
-
     try {
       const response = await axios.get(apiUrl);
       if (response.status === 200) {
@@ -88,9 +85,6 @@ async function fetchSinglePlayer(playerName) {
                 player: player,
                 averages: playerAverages,
               };
-
-            
-  
               console.log(playerWithAverages);
   
               const tableBody = document.getElementById('playerData');
@@ -124,9 +118,6 @@ async function fetchSinglePlayer(playerName) {
             .catch(error => {
                 console.error('Error:', error);
             });
-            
-
-  
             } else {
               console.log(`No season averages found for player: ${playerName}`);
             }
