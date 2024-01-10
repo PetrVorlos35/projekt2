@@ -104,11 +104,11 @@ async function fetchSinglePlayer(playerName) {
                 No = playerData.No;
                 row.insertCell(5).innerHTML = height;
                 row.insertCell(6).innerHTML = No;
-                guesses++;
                 getInput();
-                if (guesses > 8) {
-                    return alert("Konec hry, vyčerpal jsi pokusy");
+                if (guesses > 7) {
+                  return alert("Konec hry, vyčerpal jsi pokusy");
                 }else{
+                    guesses++;
                     chechWin(playerName);
                 }
                 } else {
