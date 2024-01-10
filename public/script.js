@@ -44,7 +44,7 @@ let foundPlayers = [];
 let randomPlayerName;
 
 
-let guesses = 0;
+let guesses = 1;
 var userinput = document.getElementById("searchBar");
 function getInput() {
     userinput.value = '';
@@ -64,6 +64,7 @@ function chechWin(playerName) {
         userinput.placeholder = 'Vyhrál jsi!!';
         alert('Vyhrál jsi! počet pokusů: ' + guesses);
     }
+    return true;
 }
 
 async function fetchSinglePlayer(playerName) {
@@ -106,10 +107,17 @@ async function fetchSinglePlayer(playerName) {
                 row.insertCell(6).innerHTML = No;
                 getInput();
                 if (guesses > 7) {
-                  return alert("Konec hry, vyčerpal jsi pokusy");
+                  if(chechWin(playerName)){
+                    return;
+                  }else{
+                    userinput.placeholder = `Prohrál jsi!`;
+                    guessBtn.disabled = true;
+                    userinput.disabled = true;
+                    return alert("Konec hry, vyčerpal jsi pokusy");
+                  }
                 }else{
-                    guesses++;
-                    chechWin(playerName);
+                  chechWin(playerName);
+                  guesses++;
                 }
                 } else {
                 console.log('No player data found.');
