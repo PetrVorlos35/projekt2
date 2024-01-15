@@ -55,16 +55,21 @@ let height = '';
 let No = '';
 var guessBtn = document.getElementById('guessBtn')
 
-function chechWin(playerName) {
+function chechWin(playerName, row) {
     console.log(randomPlayerName);
     console.log(playerName);
     if (randomPlayerName == playerName) {
         guessBtn.disabled = true;
         userinput.disabled = true;
-        userinput.placeholder = 'Vyhrál jsi!!';
-        alert('Vyhrál jsi! počet pokusů: ' + guesses);
+        userinput.placeholder = `Vyhrál jsi!! Počet pokusů: ${guesses}`;
+        return true;
     }
-    return true;
+}
+
+function lost() {
+  userinput.placeholder = `Prohrál jsi!`;
+  guessBtn.disabled = true;
+  serinput.disabled = true;
 }
 
 async function fetchSinglePlayer(playerName) {
@@ -110,13 +115,11 @@ async function fetchSinglePlayer(playerName) {
                   if(chechWin(playerName)){
                     return;
                   }else{
-                    userinput.placeholder = `Prohrál jsi!`;
-                    guessBtn.disabled = true;
-                    userinput.disabled = true;
+                    lost();
                     return alert("Konec hry, vyčerpal jsi pokusy");
                   }
                 }else{
-                  chechWin(playerName);
+                  chechWin(playerName, row);
                   guesses++;
                 }
                 } else {
