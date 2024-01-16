@@ -23,10 +23,8 @@ const db = mysql.createConnection({
     console.log('Connected to the database');
   });
   
-  // Middleware to parse form data
   app.use(bodyParser.urlencoded({ extended: true }));
   
-// Registration endpoint
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
   
@@ -38,16 +36,13 @@ app.post('/register', (req, res) => {
     });
   });
 
-// Login endpoint
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
   
-    // Query to check if the user exists and the password is correct
     const sql = 'SELECT * FROM Uzivatele WHERE Username = ? AND Heslo = ?';
     db.query(sql, [username, password], (err, results) => {
       if (err) throw err;
   
-      // Check if user exists
       if (results.length > 0) {
         console.log('Login successful');
         res.redirect('/index.html');
