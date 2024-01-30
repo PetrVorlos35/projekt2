@@ -95,6 +95,7 @@ async function fetchSinglePlayer(playerName) {
   
               const tableBody = document.getElementById('playerData');
             const row = tableBody.insertRow();
+            row.className = 'player-row';
             row.insertCell(0).innerHTML = player.first_name + ' ' + player.last_name;
             row.insertCell(1).innerHTML = player.team.full_name;
             row.insertCell(2).innerHTML = player.team.conference;

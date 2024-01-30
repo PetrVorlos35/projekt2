@@ -20,3 +20,11 @@
     background-color: #ffffff;
     color: black;
 }  
+
+#logo{
+    position: relative;
+    width: 10rem;
+    margin: 0 auto;
+    left: 50%;
+    transform: translate(-50%);
+}
