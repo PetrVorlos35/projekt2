@@ -31,6 +31,7 @@ function getRandomPlayer() {
         randomPlayerName = randomPlayer.Player;
         randomPlayerNo = randomPlayer.No;
         randomPlayerHeight = randomPlayer.Inches;
+        rndStats = randomPlayerStats(randomPlayerName);
       console.log(`Randomly selected player: ${randomPlayer.Player}, Number: ${randomPlayer.No}, Height: ${randomPlayer.Ht}, Inches: ${randomPlayer.Inches}`);
     })
     .catch(error => console.error('Error:', error));
@@ -61,7 +62,11 @@ async function randomPlayerStats(playerName) {
               player: player,
               averages: playerAverages,
             };
-            return RandomPlayerAvg;
+            rndPosition = player.position;
+            rndDivision = player.team.division;
+            rndConf = player.team.conference;
+            rndTeam = player.team.full_name;
+            return player;
           }
         }
       }
@@ -78,7 +83,12 @@ let page = 1;
 let foundPlayers = [];
 let randomPlayerName;
 let randomPlayerNo;
-let randomPlayerHeight
+let randomPlayerHeight;
+let rndPosition;
+let rndDivision;
+let rndConf;
+let rndTeam;
+var rndStats;
 
 
 let guesses = 1;
@@ -151,15 +161,31 @@ function chechWin(playerName, row, player, playerData) {
           }
         }
         // pozice
-        if(true){
-
+        if (rndPosition.includes(player.position) || player.position.includes(rndPosition)) {
+          row.cells[4].style.backgroundColor = 'orange';
+          row.cells[4].style.color = 'white';
+        }
+        if(rndPosition == player.position){
+          row.cells[4].style.backgroundColor = 'green';
+          row.cells[4].style.color = 'white';
         }
 
         // divize
-        // if
+        if (player.team.division == rndDivision) {
+          row.cells[3].style.backgroundColor = 'green';
+          row.cells[3].style.color = 'white';
+        }
 
         // konference
-        // if
+        if (player.team.conference == rndConf) {
+          row.cells[2].style.backgroundColor = 'green';
+          row.cells[2].style.color = 'white';
+        }
+
+        if (player.team.full_name == rndTeam) {
+          row.cells[1].style.backgroundColor = 'green';
+          row.cells[1].style.color = 'white';
+        }
       }else{
         return false;
       }
