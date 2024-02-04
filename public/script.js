@@ -29,6 +29,7 @@ function getRandomPlayer() {
     .then(response => response.json())
     .then(randomPlayer => {
         randomPlayerName = randomPlayer.Player;
+        randomPlayerNo = randomPlayer.No;
       console.log(`Randomly selected player: ${randomPlayer.Player}, Number: ${randomPlayer.No}, Height: ${randomPlayer.Ht}`);
     })
     .catch(error => console.error('Error:', error));
@@ -42,6 +43,7 @@ const pageSize = 25;
 let page = 1;
 let foundPlayers = [];
 let randomPlayerName;
+let randomPlayerNo;
 
 
 let guesses = 1;
@@ -55,14 +57,41 @@ let height = '';
 let No = '';
 var guessBtn = document.getElementById('guessBtn')
 
-function chechWin(playerName, row) {
+function chechWin(playerName, row, player, playerData) {
     console.log(randomPlayerName);
     console.log(playerName);
     if (randomPlayerName == playerName) {
-        guessBtn.disabled = true;
-        userinput.disabled = true;
-        userinput.placeholder = `Vyhrál jsi!! Počet pokusů: ${guesses}`;
-        return true;
+      Array.from(row.cells).forEach((cell) => {
+        cell.style.backgroundColor = 'green';
+        cell.style.color = 'white';
+      });
+      guessBtn.disabled = true;
+      userinput.disabled = true;
+      userinput.placeholder = `Vyhrál jsi!! Počet pokusů: ${guesses}`;
+      return true;
+    }else{
+      if (playerData.No == randomPlayerNo) {
+        row.cells[6].style.backgroundColor = 'green';
+        row.cells[6].style.color = 'white';
+      }
+      if (playerData.No != randomPlayerNo){
+        difference = Math.abs(playerData.No - randomPlayerNo);
+        if (difference <= 2) {
+          row.cells[6].style.backgroundColor = 'orange';
+          row.cells[6].style.color = 'white';
+          if (playerData.No < randomPlayerNo) {
+            row.cells[6].innerHTML += '↑';
+          }else{
+            row.cells[6].innerHTML += '↓';
+          }
+        }else{
+          if (playerData.No < randomPlayerNo) {
+            row.cells[6].innerHTML += '↑';
+          }else{
+            row.cells[6].innerHTML += '↓';
+          }
+        }
+      }
     }
 }
 
@@ -113,14 +142,14 @@ async function fetchSinglePlayer(playerName) {
                 row.insertCell(6).innerHTML = No;
                 getInput();
                 if (guesses > 7) {
-                  if(chechWin(playerName)){
+                  if(chechWin(playerName, row, player)){
                     return;
                   }else{
                     lost();
                     return alert("Konec hry, vyčerpal jsi pokusy");
                   }
                 }else{
-                  chechWin(playerName, row);
+                  chechWin(playerName, row, player, playerData);
                   guesses++;
                 }
                 } else {
