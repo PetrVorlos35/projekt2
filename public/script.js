@@ -30,9 +30,12 @@ function getRandomPlayer() {
     .then(randomPlayer => {
         randomPlayerName = randomPlayer.Player;
         randomPlayerNo = randomPlayer.No;
-      console.log(`Randomly selected player: ${randomPlayer.Player}, Number: ${randomPlayer.No}, Height: ${randomPlayer.Ht}`);
+        randomPlayerHeight = randomPlayer.Inches;
+      console.log(`Randomly selected player: ${randomPlayer.Player}, Number: ${randomPlayer.No}, Height: ${randomPlayer.Ht}, Inches: ${randomPlayer.Inches}`);
     })
     .catch(error => console.error('Error:', error));
+
+    
 }
 
 getRandomPlayer();
@@ -70,35 +73,75 @@ function chechWin(playerName, row, player, playerData) {
       userinput.placeholder = `Vyhrál jsi!! Počet pokusů: ${guesses}`;
       return true;
     }else{
-      if (playerData.No == randomPlayerNo) {
-        row.cells[6].style.backgroundColor = 'green';
-        row.cells[6].style.color = 'white';
-      }
-      if (playerData.No != randomPlayerNo){
-        difference = Math.abs(playerData.No - randomPlayerNo);
-        if (difference <= 2) {
-          row.cells[6].style.backgroundColor = 'orange';
+      if (guesses < 8) {
+        if (playerData.No == randomPlayerNo) {
+          row.cells[6].style.backgroundColor = 'green';
           row.cells[6].style.color = 'white';
-          if (playerData.No < randomPlayerNo) {
-            row.cells[6].innerHTML += '↑';
+        }
+        if (playerData.No != randomPlayerNo){
+          difference = Math.abs(playerData.No - randomPlayerNo);
+          if (difference <= 2) {
+            row.cells[6].style.backgroundColor = 'orange';
+            row.cells[6].style.color = 'white';
+            if (playerData.No < randomPlayerNo) {
+              row.cells[6].innerHTML += '↑';
+            }else{
+              row.cells[6].innerHTML += '↓';
+            }
           }else{
-            row.cells[6].innerHTML += '↓';
-          }
-        }else{
-          if (playerData.No < randomPlayerNo) {
-            row.cells[6].innerHTML += '↑';
-          }else{
-            row.cells[6].innerHTML += '↓';
+            if (playerData.No < randomPlayerNo) {
+              row.cells[6].innerHTML += '↑';
+            }else{
+              row.cells[6].innerHTML += '↓';
+            }
           }
         }
+        if (randomPlayerHeight == playerData.Inches) {
+          row.cells[5].style.backgroundColor = 'green';
+          row.cells[5].style.color = 'white';
+        }
+        if (randomPlayerHeight != playerData.Inches) {
+          difference = Math.abs(playerData.Inches - randomPlayerHeight);
+          if (difference <= 2) {
+            row.cells[5].style.backgroundColor = 'orange';
+            row.cells[5].style.color = 'white';
+            if (playerData.Inches < randomPlayerHeight) {
+              row.cells[5].innerHTML += '↑';
+            }else{
+              row.cells[5].innerHTML += '↓';
+            }
+          }else{
+            if (playerData.Inches < randomPlayerHeight) {
+              row.cells[5].innerHTML += '↑';
+            }else{
+              row.cells[5].innerHTML += '↓';
+            }
+          }
+        }
+        // pozice
+        if(true){
+
+        }
+
+        // divize
+        // if
+
+        // konference
+        // if
+      }else{
+        return false;
       }
     }
 }
 
-function lost() {
+function lost(row) {
   userinput.placeholder = `Prohrál jsi!`;
   guessBtn.disabled = true;
-  serinput.disabled = true;
+  userinput.disabled = true;
+  Array.from(row.cells).forEach((cell) => {
+    cell.style.backgroundColor = 'red';
+    cell.style.color = 'white';
+  });
 }
 
 async function fetchSinglePlayer(playerName) {
@@ -145,8 +188,7 @@ async function fetchSinglePlayer(playerName) {
                   if(chechWin(playerName, row, player)){
                     return;
                   }else{
-                    lost();
-                    return alert("Konec hry, vyčerpal jsi pokusy");
+                    lost(row);
                   }
                 }else{
                   chechWin(playerName, row, player, playerData);

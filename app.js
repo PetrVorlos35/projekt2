@@ -61,7 +61,8 @@ function readSpreadsheet(filePath) {
   return data.map(player => ({
     No: player['No.'],
     Player: player.Player,
-    Ht: player.Ht
+    Ht: player.Ht,
+    Inches: player.Inches
   }));
 }
 
