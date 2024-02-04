@@ -34,12 +34,43 @@ function getRandomPlayer() {
       console.log(`Randomly selected player: ${randomPlayer.Player}, Number: ${randomPlayer.No}, Height: ${randomPlayer.Ht}, Inches: ${randomPlayer.Inches}`);
     })
     .catch(error => console.error('Error:', error));
-
     
+
 }
 
 getRandomPlayer();
 });
+
+async function randomPlayerStats(playerName) {
+  const apiUrl = `https://www.balldontlie.io/api/v1/players?search=${playerName}&per_page=1`;
+
+  try {
+    const response = await axios.get(apiUrl);
+    if (response.status === 200) {
+      const player = response.data.data[0];
+
+      if (player) {
+        const playerId = player.id;
+        const averagesResponse = await axios.get(`https://www.balldontlie.io/api/v1/season_averages?season=2023&player_ids[]=${playerId}`);
+
+        if (averagesResponse.status === 200) {
+          const playerAverages = averagesResponse.data.data;
+
+          if (playerAverages.length > 0) {
+            const RandomPlayerAvg = {
+              player: player,
+              averages: playerAverages,
+            };
+            return RandomPlayerAvg;
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Chyba při načítání dat hráče: ", error);
+  }
+  return null;
+}
 
 var nameToFind = "";
 const pageSize = 25;
@@ -47,6 +78,7 @@ let page = 1;
 let foundPlayers = [];
 let randomPlayerName;
 let randomPlayerNo;
+let randomPlayerHeight
 
 
 let guesses = 1;
