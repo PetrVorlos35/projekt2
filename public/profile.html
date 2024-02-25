@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBA Guessing Game</title>
+  <!-- Insert this line inside your <head> tag to link Tailwind CSS from CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Container for the whole screen -->
+<div class="min-h-screen bg-gray-900 text-white">
+
+    <!-- Top navigation -->
+    <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+      <div class="flex items-center">
+        <button class="p-2 mr-4 text-white">
+          <!-- Hamburger icon, assuming it is a standard 3-line menu icon -->
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+        <a class="text-xl font-semibold" href="index.html">NBA Guessing Game</a>
+      </div>
+      <div class="flex items-center">
+        <button class="p-2">
+          <!-- Profile icon, assuming it is a standard user profile icon -->
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+  
+    <!-- Main content -->
+    <div class="flex">
+  
+      <!-- Sidebar menu, assuming it is hidden or shown based on screen size or toggle -->
+      <aside class="hidden md:flex flex-col items-center bg-gray-800 p-4">
+        <div class="text-white">
+          <!-- Menu items here -->
+        </div>
+      </aside>
+  
+      <!-- Content area -->
+      <div class="flex-1 p-8">
+        <!-- Statistics section -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 class="text-2xl font-bold mb-4">Statistics</h2>
+          <div class="grid gap-4 grid-cols-2">
+            <div>Games played:</div>
+            <div>0</div> <!-- Sample data, replace with dynamic content -->
+            
+            <div>Longest streak:</div>
+            <div>0</div> <!-- Sample data, replace with dynamic content -->
+  
+            <div>Current streak:</div>
+            <div>0</div> <!-- Sample data, replace with dynamic content -->
+  
+            <div>Win percentage:</div>
+            <div>0%</div> <!-- Sample data, replace with dynamic content -->
+          </div>
+        </div>
+  
+        <!-- Guess distribution section -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8">
+          <h2 class="text-2xl font-bold mb-4">Guess distribution</h2>
+          <div class="grid gap-4">
+            <!-- Distribution rows -->
+            <div>1:</div>
+            <div>2:</div>
+            <div>3:</div>
+            <!-- Add more distribution rows as needed -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>
