@@ -42,40 +42,6 @@ function getRandomPlayer() {
 getRandomPlayer();
 });
 
-// async function randomPlayerStats(playerName) {
-//   const apiUrl = `https://www.balldontlie.io/api/v1/players?search=${playerName}&per_page=1`;
-
-//   try {
-//     const response = await axios.get(apiUrl);
-//     if (response.status === 200) {
-//       const player = response.data.data[0];
-
-//       if (player) {
-//         const playerId = player.id;
-//         const averagesResponse = await axios.get(`https://www.balldontlie.io/api/v1/season_averages?season=2023&player_ids[]=${playerId}`);
-
-//         if (averagesResponse.status === 200) {
-//           const playerAverages = averagesResponse.data.data;
-
-//           if (playerAverages.length > 0) {
-//             const RandomPlayerAvg = {
-//               player: player,
-//               averages: playerAverages,
-//             };
-//             rndPosition = player.position;
-//             rndDivision = player.team.division;
-//             rndConf = player.team.conference;
-//             rndTeam = player.team.full_name;
-//             return player;
-//           }
-//         }
-//       }
-//     }
-//   } catch (error) {
-//     console.error("Chyba při načítání dat hráče: ", error);
-//   }
-//   return null;
-// }
 
 async function randomPlayerStats(playerName) {
 
@@ -84,7 +50,7 @@ async function randomPlayerStats(playerName) {
     let playerLastName = nameSplit[1];
 
     const apiUrl = `https://api.balldontlie.io/v1/players?first_name=${playerFirstName}&last_name=${playerLastName}&per_page=1`;
-  const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; // Replace YOUR_API_KEY with your actual API key
+  const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
 
   try {
     const response = await axios.get(apiUrl, {
@@ -102,7 +68,11 @@ async function randomPlayerStats(playerName) {
       });
 
       if (averagesResponse.status === 200 && averagesResponse.data.data.length > 0) {
-        const playerAverages = averagesResponse.data.data[0]; // Assuming the first entry is the desired one
+        const playerAverages = averagesResponse.data.data[0];
+        rndPosition = player.position;
+        rndDivision = player.team.division;
+        rndConf = player.team.conference;
+        rndTeam = player.team.full_name;
         return {
           player: player,
           averages: playerAverages,
@@ -202,11 +172,13 @@ function chechWin(playerName, row, player, playerData) {
             }
           }
         }
+
         // pozice
         if (rndPosition.includes(player.position) || player.position.includes(rndPosition)) {
           row.cells[4].style.backgroundColor = 'orange';
           row.cells[4].style.color = 'white';
         }
+        console.log(rndPosition);
         if(rndPosition == player.position){
           row.cells[4].style.backgroundColor = 'green';
           row.cells[4].style.color = 'white';
@@ -293,7 +265,7 @@ function lost(row) {
                 row.insertCell(6).innerHTML = No;
                 getInput();
                 if (guesses > 7) {
-                  if(chechWin(playerName, row, player)){
+                  if(chechWin(playerName, row, player, playerData)){
                     return;
                   }else{
                     lost(row);
