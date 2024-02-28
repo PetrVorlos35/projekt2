@@ -78,21 +78,26 @@ getRandomPlayer();
 // }
 
 async function randomPlayerStats(playerName) {
-  const apiUrl = `https://new.balldontlie.io/api/v1/players?search=${playerName}&per_page=1`;
+
+  var nameSplit = playerName.split(" ");
+    let playerFirstName = nameSplit[0];
+    let playerLastName = nameSplit[1];
+
+    const apiUrl = `https://api.balldontlie.io/v1/players?first_name=${playerFirstName}&last_name=${playerLastName}&per_page=1`;
   const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; // Replace YOUR_API_KEY with your actual API key
 
   try {
     const response = await axios.get(apiUrl, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': ` ${apiKey}`
       }
     });
     if (response.status === 200 && response.data.data.length > 0) {
       const player = response.data.data[0];
       const playerId = player.id;
-      const averagesResponse = await axios.get(`https://new.balldontlie.io/api/v1/season_averages?season=2023&player_ids[]=${playerId}`, {
+      const averagesResponse = await axios.get(`https://api.balldontlie.io/v1/season_averages?season=2023&player_ids[]=${playerId}`, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': ` ${apiKey}`
         }
       });
 
@@ -239,110 +244,83 @@ function lost(row) {
   });
 }
 
-// async function fetchSinglePlayer(playerName) {
-//     const apiUrl = `https://www.balldontlie.io/api/v1/players?search=${playerName}&per_page=1`;
-//     try {
-//       const response = await axios.get(apiUrl);
-//       if (response.status === 200) {
-//         const player = response.data.data[0];
-  
-//         if (player) {
-//           const playerId = player.id;
-//           const averagesResponse = await axios.get(`https://www.balldontlie.io/api/v1/season_averages?season=2023&player_ids[]=${playerId}`);
-  
-//           if (averagesResponse.status === 200) {
-//             const playerAverages = averagesResponse.data.data;
-  
-//             if (playerAverages.length > 0) {
-//               const playerWithAverages = {
-//                 player: player,
-//                 averages: playerAverages,
-//               };
-//               console.log(playerWithAverages);
-  
-//               const tableBody = document.getElementById('playerData');
-//             const row = tableBody.insertRow();
-//             row.className = 'player-row';
-//             row.insertCell(0).innerHTML = player.first_name + ' ' + player.last_name;
-//             row.insertCell(1).innerHTML = player.team.full_name;
-//             row.insertCell(2).innerHTML = player.team.conference;
-//             row.insertCell(3).innerHTML = player.team.division;
-//             row.insertCell(4).innerHTML = player.position;
-//             fetch(`http://localhost:3000/search?term=${playerName}`)
-//             .then(response => response.json())
-//             .then(players => {
-//                 if (Array.isArray(players) && players.length > 0) {
-//                 const playerData = players[0];
-//                 console.log(playerData.Ht, playerData.No, playerData.Player);
-//                 height = playerData.Ht;
-//                 No = playerData.No;
-//                 row.insertCell(5).innerHTML = height;
-//                 row.insertCell(6).innerHTML = No;
-//                 getInput();
-//                 if (guesses > 7) {
-//                   if(chechWin(playerName, row, player)){
-//                     return;
-//                   }else{
-//                     lost(row);
-//                   }
-//                 }else{
-//                   chechWin(playerName, row, player, playerData);
-//                   guesses++;
-//                 }
-//                 } else {
-//                 console.log('No player data found.');
-//                 }
-//             })
-//             .catch(error => {
-//                 console.error('Error:', error);
-//             });
-//             } else {
-//               console.log(`No season averages found for player: ${playerName}`);
-//             }
-//           } else {
-//             console.log(`Failed to retrieve season averages. Status code: ${averagesResponse.status}`);
-//           }
-//         } else {
-//           console.log(`No player found with the name: ${playerName}`);
-//         }
-//       } else {
-//         console.log(`Failed to retrieve player data. Status code: ${response.status}`);
-//       }
-//     } catch (error) {
-//       console.error('Error:', error);
-//     }
-//   }
+  async function fetchSinglePlayer(playerName) {
+    const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
+    const headers = {
+        'Authorization': ` ${apiKey}`
+    };
 
+    var nameSplit = playerName.split(" ");
+    let playerFirstName = nameSplit[0];
+    let playerLastName = nameSplit[1];
 
-async function fetchSinglePlayer(playerName) {
-  const apiUrl = `https://new.balldontlie.io/api/v1/players?search=${playerName}&per_page=1`;
-  const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; // Replace YOUR_API_KEY with your actual API key
+    const apiUrl = `https://api.balldontlie.io/v1/players?first_name=${playerFirstName}&last_name=${playerLastName}&per_page=1`;
+    try {
+        const response = await axios.get(apiUrl, { headers });
+        if (response.status === 200 && response.data.data.length > 0) {
+            const player = response.data.data[0];
+            const playerId = player.id;
+            const averagesUrl = `https://api.balldontlie.io/v1/season_averages?season=2023&player_ids[]=${playerId}`;
+            const averagesResponse = await axios.get(averagesUrl, { headers });
 
-  try {
-    const response = await axios.get(apiUrl, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`
-      }
-    });
-    if (response.status === 200 && response.data.data.length > 0) {
-      const player = response.data.data[0];
-      const playerId = player.id;
-      const averagesResponse = await axios.get(`https://new.balldontlie.io/api/v1/season_averages?season=2023&player_ids[]=${playerId}`, {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`
+            if (averagesResponse.status === 200) {
+                const playerAverages = averagesResponse.data.data;
+
+                if (playerAverages.length > 0) {
+                    const playerWithAverages = {
+                        player: player,
+                        averages: playerAverages,
+                    };
+                    console.log(playerWithAverages);
+
+                    const tableBody = document.getElementById('playerData');
+                    const row = tableBody.insertRow();
+                    row.className = 'player-row';
+                    row.insertCell(0).innerHTML = player.first_name + ' ' + player.last_name;
+                    row.insertCell(1).innerHTML = player.team.full_name;
+                    row.insertCell(2).innerHTML = player.team.conference;
+                    row.insertCell(3).innerHTML = player.team.division;
+                    row.insertCell(4).innerHTML = player.position;
+                    fetch(`http://localhost:3000/search?term=${playerName}`)
+            .then(response => response.json())
+            .then(players => {
+                if (Array.isArray(players) && players.length > 0) {
+                const playerData = players[0];
+                console.log(playerData.Ht, playerData.No, playerData.Player);
+                height = playerData.Ht;
+                No = playerData.No;
+                row.insertCell(5).innerHTML = height;
+                row.insertCell(6).innerHTML = No;
+                getInput();
+                if (guesses > 7) {
+                  if(chechWin(playerName, row, player)){
+                    return;
+                  }else{
+                    lost(row);
+                  }
+                }else{
+                  chechWin(playerName, row, player, playerData);
+                  guesses++;
+                }
+                } else {
+                console.log('No player data found.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+                    
+                } else {
+                    console.log(`No season averages found for player: ${playerName}`);
+                }
+            } else {
+                console.log(`Failed to retrieve season averages. Status code: ${averagesResponse.status}`);
+            }
+        } else {
+            console.log(`No player found with the name: ${playerName}`);
         }
-      });
-
-      if (averagesResponse.status === 200 && averagesResponse.data.data.length > 0) {
-        const playerAverages = averagesResponse.data.data[0];
-        console.log(playerAverages); // Process player averages as needed
-      } else {
-        console.log('No season averages found.');
-      }
-    } else {
-      console.log('Player not found.');
+    } catch (error) {
+        console.error('Error:', error);
     }
-  } catch (error) {
-    console.error('Error:', error);
-  }
 }
+
