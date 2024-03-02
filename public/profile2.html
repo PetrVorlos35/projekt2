@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Overview</title>
+  <link rel="shortcut icon" href="logo3.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="min-h-screen bg-gray-900 text-white">
+
+    <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+        <div class="flex items-center">
+          <button class="p-2 mr-4 text-white">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+          <a href="index.html" class="flex items-center">
+              <img src="logo3.png" alt="NBA Logo" class="h-8 mr-2"> 
+              <span class="text-xl font-semibold">NBA Guessing Game</span>
+            </a>
+        </div>
+        <div class="flex items-center">
+          <button class="p-2">
+            <a href="profile2.html">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
+                  </svg>
+            </a>
+          </button>
+          <a href="login.html" class="ml-4 text-white text-sm font-medium">Login</a>
+        </div>
+      </nav>
+
+  <div class="flex flex-col md:flex-row">
+
+    <aside class="md:w-1/4 bg-gray-800 p-4">
+      <div class="mb-8">
+        <div class="bg-gray-700 p-4 rounded-lg text-center">
+            <img src="profile-pic.jpg" alt="User Avatar" class="rounded-full mx-auto w-20 h-20 mb-2 object-cover">
+            <h3 class="text-xl font-semibold mb-2">Username</h3>
+          <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae, magnam consectetur placeat quo in explicabo iusto nostrum distinctio a? Laborum optio est nisi quod quae beatae rem soluta excepturi. Ut rem neque delectus odit, eveniet hic mollitia? Neque eveniet nemo nam. Consequatur, maxime saepe perspiciatis quaerat deleniti accusantium, odio eos provident sapiente quos quae? Veniam blanditiis aliquam veritatis voluptate architecto quam, necessitatibus enim eveniet laudantium nam illo nulla temporibus ea!</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="flex-1 p-8">
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Personal Information</h2>
+        <div class="mb-4">
+          <label class="block">Name:</label>
+          <div>Petr Vorel</div>
+        </div>
+        <div class="mb-4">
+          <label class="block">Email:</label>
+          <div>petr@vorel.com</div>
+        </div>
+        <div class="mb-4">
+            <label class="block">My Statistics:</label>
+            <div><a href="profile.html">Statistics</a></div>
+        </div>
+        <!-- Additional personal information fields -->
+      </div>
+
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8">
+        <h2 class="text-2xl font-bold mb-4">Activity</h2>
+        <div>Recent activity details...</div>
+        <!-- Dynamic content related to user activity -->
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
