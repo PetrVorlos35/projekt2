@@ -41,7 +41,7 @@
       <div class="mb-8">
         <div class="bg-gray-700 p-4 rounded-lg text-center">
             <img src="profile-pic.jpg" alt="User Avatar" class="rounded-full mx-auto w-20 h-20 mb-2 object-cover">
-            <h3 class="text-xl font-semibold mb-2" id="user-info">Username</h3>
+            <h3 class="text-xl font-semibold mb-2 user-name"></h3>
           <!-- <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae, magnam consectetur placeat quo in explicabo iusto nostrum distinctio a? Laborum optio est nisi quod quae beatae rem soluta excepturi. Ut rem neque delectus odit, eveniet hic mollitia? Neque eveniet nemo nam. Consequatur, maxime saepe perspiciatis quaerat deleniti accusantium, odio eos provident sapiente quos quae? Veniam blanditiis aliquam veritatis voluptate architecto quam, necessitatibus enim eveniet laudantium nam illo nulla temporibus ea!</p> -->
         </div>
       </div>
@@ -60,16 +60,19 @@
         <h2 class="text-2xl font-bold mb-4">Personal Information</h2>
         <div class="mb-4">
           <label class="block">Name:</label>
-          <div id="user-info">Petr Vorel</div>
+          <div class="user-name"></div>
         </div>
         <div class="mb-4">
           <label class="block">Email:</label>
-          <div>petr@vorel.com</div>
+          <div><span class="user-name"></span>@gmail.com</div>
         </div>
         <div class="mb-4">
-            <label class="block">My Statistics:</label>
-            <div><a href="stats.html">Statistics</a></div>
+          <label class="block mb-2">Go to Statistics:</label>
+          <a href="stats.html" class="inline-block bg-gray-700 text-white font-bold py-2 px-4 rounded hover:bg-gray-500 transition-colors duration-150 ease-in-out">
+            Statistics
+          </a>
         </div>
+        
         <!-- Additional personal information fields -->
       </div>
 
@@ -99,7 +102,14 @@
     .then(data => {
         console.log('User Info:', data);
         // Display user info on the page
-        document.getElementById('user-info').textContent = `${data.username}`;
+        // Get all elements with the specified class
+        const elements = document.querySelectorAll('.user-name');
+
+        // Iterate through each element and set the textContent
+        elements.forEach(element => {
+            element.textContent = data.username;
+        });
+
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);

@@ -10,100 +10,106 @@
   <link rel="shortcut icon" href="logo3.png" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body style="background-color: black; color: white;">
+<body>
+<div class="min-h-screen bg-gray-900 text-white">
 
-    <nav class="flex justify-between items-center p-4 border-b border-gray-800">
-        <div class="flex items-center">
-          <button class="p-2 mr-4 text-white">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
-          <a href="index.html" class="flex items-center">
-              <img src="logo3.png" alt="NBA Logo" class="h-8 mr-2"> 
-              <span class="text-xl font-semibold">NBA Guessing Game</span>
-            </a>
-        </div>
-        <div class="flex items-center">
-          <button class="p-2">
-            <a href="profile2.html">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
-                  </svg>
-            </a>
-          </button>
-          <!-- <a href="login.html" class="ml-4 text-white text-sm font-medium">Login</a> -->
-          <a href="/logout" class="ml-4 text-white text-sm font-medium">logout</a>
-        </div>
-      </nav>
 
-    <!-- <img src="logo3.png" alt="logo" id="logo" class="text-center"> -->
-
-    <div class="game text-center p-2 position-relative top-50">
-        <div class="d-flex flex-column align-items-center">
-            <input type="text" id="searchBar" class="form-control w-25 m-auto m-2 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
-            <ul id="suggestions" class="form-control w-25 m-auto m-2 position-absolute" style="top: 46%; z-index: 100; border: none;"></ul>
-        </div>
-        <button id="guessBtn" class="btn btn-success m-3" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
-        <div class="guesses">
-          
-        </div>
+  <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+    <div class="flex items-center">
+      <button class="p-2 mr-4 text-white">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+      <a href="index.html" class="flex items-center">
+          <img src="logo3.png" alt="NBA Logo" class="h-8 mr-2"> 
+          <span class="text-xl font-semibold">NBA Guessing Game</span>
+        </a>
     </div>
+    <div class="flex items-center">
+      <button class="p-2">
+        <a href="profile2.html" class="flex items-center">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
+          </svg>
+          <span class="text-xs font-semibold ml-2" id="user-info"></span>
+      </a>
+      
+      </button>
+      <!-- <a href="login.html" class="ml-4 text-white text-sm font-medium">Login</a> -->
+      <a href="/logout" class="ml-4 text-white text-sm font-medium">logout</a>
+    </div>
+  </nav>
 
-    <div id="login"></div>
-    
-    <!-- <div id="user-info"></div> -->
+<!-- <img src="logo3.png" alt="logo" id="logo" class="text-center"> -->
 
-    
-    <div class="container mt-3">
-      <table class="table player-table">
-          <thead>
-              <tr class="header">
-                  <th scope="col">Player Name</th>
-                  <th scope="col">Team Name</th>
-                  <th scope="col">Conference</th>
-                  <th scope="col">Division</th>
-                  <th scope="col">Position</th>
-                  <th scope="col">Height</th>
-                  <th scope="col">Number</th>
-              </tr>
-          </thead>
-          <tbody id="playerData">
-              
-              <!-- Player data will be dynamically inserted here -->
-          </tbody>
-      </table>
-  </div>
+<div class="game text-center p-2 position-relative top-50">
+    <div class="d-flex flex-column align-items-center">
+        <input type="text" id="searchBar" class="form-control w-25 m-auto m-2 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
+        <ul id="suggestions" class="form-control w-25 m-auto m-2 position-absolute" style="top: 46%; z-index: 100; border: none;"></ul>
+    </div>
+    <button id="guessBtn" class="btn btn-success m-3" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
+    <div class="guesses">
+      
+    </div>
+</div>
 
-  <script src="script.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<div id="login"></div>
+
+<!-- <div id="user-info"></div> -->
+
+
+<div class="container mt-3">
+  <table class="table player-table">
+      <thead>
+          <tr class="header">
+              <th scope="col">Player Name</th>
+              <th scope="col">Team Name</th>
+              <th scope="col">Conference</th>
+              <th scope="col">Division</th>
+              <th scope="col">Position</th>
+              <th scope="col">Height</th>
+              <th scope="col">Number</th>
+          </tr>
+      </thead>
+      <tbody id="playerData">
+          
+          <!-- Player data will be dynamically inserted here -->
+      </tbody>
+  </table>
+</div>
+
+<script src="script.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.6.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-  fetch('/get-user-info')
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        }
-        // Pokud server odpoví stavovým kódem, který není OK (např. 401 nebo 403), považujeme to za "není uživatel"
-        if(response.status === 401 || response.status === 403) {
-            console.log("není uživatel");
-            // Můžete sem také přidat přesměrování na přihlašovací stránku, pokud je to vhodné
-            window.location.href = '/login.html';
-        }
-        throw new Error('Network response was not ok.');
-    })
-    .then(data => {
-        console.log('User Info:', data);
-        // Display user info on the page
-        // document.getElementById('user-info').textContent = `Welcome, ${data.username}`;
-    })
-    .catch(error => {
-        console.error('There has been a problem with your fetch operation:', error);
-    });
+fetch('/get-user-info')
+.then(response => {
+    if (response.ok) {
+        return response.json();
+    }
+    // Pokud server odpoví stavovým kódem, který není OK (např. 401 nebo 403), považujeme to za "není uživatel"
+    if(response.status === 401 || response.status === 403) {
+        console.log("není uživatel");
+        // Můžete sem také přidat přesměrování na přihlašovací stránku, pokud je to vhodné
+        window.location.href = '/login.html';
+    }
+    throw new Error('Network response was not ok.');
+})
+.then(data => {
+    console.log('User Info:', data);
+    // Display user info on the page
+    document.getElementById('user-info').textContent = `${data.username}`;
+})
+.catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+});
 </script>
 
 
 
+
+</div>
 </body>
 </html>

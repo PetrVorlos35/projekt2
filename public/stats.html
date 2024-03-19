@@ -24,11 +24,12 @@
         </div>
         <div class="flex items-center">
           <button class="p-2">
-            <a href="profile2.html">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
-                  </svg>
-            </a>
+            <a href="profile2.html" class="flex items-center">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
+              </svg>
+              <span class="text-xs font-semibold ml-2" id="user-info"></span>
+          </a>
           </button>
           <a href="/logout" class="ml-4 text-white text-sm font-medium">logout</a>
           <!-- <a href="login.html" class="ml-4 text-white text-sm font-medium">Login</a> -->
@@ -106,7 +107,7 @@
       .then(data => {
           console.log('User Info:', data);
           // Display user info on the page
-          // document.getElementById('user-info').textContent = `${data.username}`;
+          document.getElementById('user-info').textContent = `${data.username}`;
       })
       .catch(error => {
           console.error('There has been a problem with your fetch operation:', error);
