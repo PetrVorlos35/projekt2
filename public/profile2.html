@@ -30,7 +30,8 @@
                   </svg>
             </a>
           </button>
-          <a href="login.html" class="ml-4 text-white text-sm font-medium">Login</a>
+          <a href="/logout" class="ml-4 text-white text-sm font-medium">logout</a>
+          <!-- <a href="login.html" class="ml-4 text-white text-sm font-medium">Login</a> -->
         </div>
       </nav>
 
@@ -40,18 +41,26 @@
       <div class="mb-8">
         <div class="bg-gray-700 p-4 rounded-lg text-center">
             <img src="profile-pic.jpg" alt="User Avatar" class="rounded-full mx-auto w-20 h-20 mb-2 object-cover">
-            <h3 class="text-xl font-semibold mb-2">Username</h3>
-          <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae, magnam consectetur placeat quo in explicabo iusto nostrum distinctio a? Laborum optio est nisi quod quae beatae rem soluta excepturi. Ut rem neque delectus odit, eveniet hic mollitia? Neque eveniet nemo nam. Consequatur, maxime saepe perspiciatis quaerat deleniti accusantium, odio eos provident sapiente quos quae? Veniam blanditiis aliquam veritatis voluptate architecto quam, necessitatibus enim eveniet laudantium nam illo nulla temporibus ea!</p>
+            <h3 class="text-xl font-semibold mb-2" id="user-info">Username</h3>
+          <!-- <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae, magnam consectetur placeat quo in explicabo iusto nostrum distinctio a? Laborum optio est nisi quod quae beatae rem soluta excepturi. Ut rem neque delectus odit, eveniet hic mollitia? Neque eveniet nemo nam. Consequatur, maxime saepe perspiciatis quaerat deleniti accusantium, odio eos provident sapiente quos quae? Veniam blanditiis aliquam veritatis voluptate architecto quam, necessitatibus enim eveniet laudantium nam illo nulla temporibus ea!</p> -->
         </div>
       </div>
     </aside>
 
     <div class="flex-1 p-8">
+      <div class="mb-4">
+        <a href="index.html" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+          <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Game
+        </a>
+      </div>
       <div class="bg-gray-800 p-6 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-4">Personal Information</h2>
         <div class="mb-4">
           <label class="block">Name:</label>
-          <div>Petr Vorel</div>
+          <div id="user-info">Petr Vorel</div>
         </div>
         <div class="mb-4">
           <label class="block">Email:</label>
@@ -59,7 +68,7 @@
         </div>
         <div class="mb-4">
             <label class="block">My Statistics:</label>
-            <div><a href="profile.html">Statistics</a></div>
+            <div><a href="stats.html">Statistics</a></div>
         </div>
         <!-- Additional personal information fields -->
       </div>
@@ -73,5 +82,28 @@
   </div>
 
 </div>
+<script>
+  fetch('/get-user-info')
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        // Pokud server odpoví stavovým kódem, který není OK (např. 401 nebo 403), považujeme to za "není uživatel"
+        if(response.status === 401 || response.status === 403) {
+            console.log("není uživatel");
+            // Můžete sem také přidat přesměrování na přihlašovací stránku, pokud je to vhodné
+            window.location.href = '/login.html';
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(data => {
+        console.log('User Info:', data);
+        // Display user info on the page
+        document.getElementById('user-info').textContent = `${data.username}`;
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+</script>
 </body>
 </html>

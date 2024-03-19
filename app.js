@@ -3,8 +3,14 @@ const xlsx = require('xlsx');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const jwtSecret = 'tajnyHeslo'; // Replace this with a real secret key
+
 
 const app = express();
+app.use(cookieParser());
+
 
 app.use(express.static('public'));
 
@@ -25,6 +31,7 @@ const db = mysql.createConnection({
   
   app.use(bodyParser.urlencoded({ extended: true }));
   
+  
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
   
@@ -36,7 +43,7 @@ app.post('/register', (req, res) => {
     });
   });
 
-app.post('/login', (req, res) => {
+  app.post('/login', (req, res) => {
     const { username, password } = req.body;
   
     const sql = 'SELECT * FROM Uzivatele WHERE Username = ? AND Heslo = ?';
@@ -44,14 +51,60 @@ app.post('/login', (req, res) => {
       if (err) throw err;
   
       if (results.length > 0) {
-        console.log('Login successful');
+        const token = jwt.sign({ username: username }, jwtSecret, { expiresIn: '1h' });
+        
+        // Set token in HTTP-only cookie
+        res.cookie('token', token, { httpOnly: true, secure: true }); // use secure: true in production
         res.redirect('/index.html');
       } else {
         console.log('Incorrect Username and/or Password!');
-        res.send('Incorrect Username and/or Password! <button onclick="document.location=`login.html`">Back</button>');
+        res.status(401).send('Incorrect Username and/or Password!');
       }
     });
+});
+
+app.get('/get-user-info', (req, res) => {
+  const token = req.cookies.token; // Access the token from the HTTP-only cookie
+  if (!token) {
+      return res.status(401).send('No token provided');
+  }
+
+  jwt.verify(token, jwtSecret, (err, decoded) => {
+      if (err) {
+          return res.status(500).send('Failed to authenticate token.');
+      }
+
+      // Send back user information. Adjust according to your token payload structure
+      res.json({ username: decoded.username });
   });
+});
+
+app.get('/logout', (req, res) => {
+  // Clear the cookie named 'token'
+  res.clearCookie('token');
+  
+  // Optionally, redirect the user to the login page or home page after logging out
+  res.redirect('/login.html');
+});
+
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, jwtSecret, (err, user) => {
+    if (err) return res.sendStatus(403); // Invalid token
+    req.user = user;
+    next();
+  });
+};
+
+app.get('/protected', authenticateToken, (req, res) => {
+  res.json({ message: "You have access to the protected data", user: req.user });
+});
+
 
 function readSpreadsheet(filePath) {
   const workbook = xlsx.readFile(filePath);
