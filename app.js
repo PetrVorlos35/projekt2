@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const jwtSecret = 'tajnyHeslo'; // Replace this with a real secret key
+const jwtSecret = 'tajnyHeslo'; 
 
 
 const app = express();
@@ -43,18 +43,34 @@ app.post('/register', (req, res) => {
     });
   });
 
+  app.post('/save-stats', (req, res) => {
+    const { userID, guesses, win } = req.body;
+    const sql = 'CALL InsertStatistiky(?, ?, ?)';
+    db.query(sql, [userID, guesses, win], (err, result) => {
+        if (err) {
+            console.error('Failed to insert stats: ' + err.stack);
+            res.status(500).send('Failed to save stats');
+            return;
+        }
+        console.log('Stats saved successfully');
+        res.send('Stats saved successfully');
+    });
+});
+
+
+  
   app.post('/login', (req, res) => {
     const { username, password } = req.body;
   
-    const sql = 'SELECT * FROM Uzivatele WHERE Username = ? AND Heslo = ?';
+    const sql = 'SELECT ID, Username FROM Uzivatele WHERE Username = ? AND Heslo = ?';
     db.query(sql, [username, password], (err, results) => {
       if (err) throw err;
   
       if (results.length > 0) {
-        const token = jwt.sign({ username: username }, jwtSecret, { expiresIn: '1h' });
+        const user = results[0]; 
+        const token = jwt.sign({ id: user.ID, username: user.Username }, jwtSecret, { expiresIn: '1h' });
         
-        // Set token in HTTP-only cookie
-        res.cookie('token', token, { httpOnly: true, secure: true }); // use secure: true in production
+        res.cookie('token', token, { httpOnly: true, secure: true }); 
         res.redirect('/index.html');
       } else {
         console.log('Incorrect Username and/or Password!');
@@ -62,6 +78,7 @@ app.post('/register', (req, res) => {
       }
     });
 });
+
 
 app.get('/get-user-info', (req, res) => {
   const token = req.cookies.token; // Access the token from the HTTP-only cookie
@@ -74,10 +91,11 @@ app.get('/get-user-info', (req, res) => {
           return res.status(500).send('Failed to authenticate token.');
       }
 
-      // Send back user information. Adjust according to your token payload structure
-      res.json({ username: decoded.username });
+      // Send back user information, including the ID
+      res.json({ id: decoded.id, username: decoded.username });
   });
 });
+
 
 app.get('/logout', (req, res) => {
   // Clear the cookie named 'token'

@@ -1,0 +1,34 @@
+zobrazeni stats
+
+SELECT 
+  UzivateleID,
+  COUNT(*) AS PocetOdehranychHer,
+  (SELECT CurrentWinStreak FROM Statistiky WHERE UzivateleID = S.UzivateleID ORDER BY ID DESC LIMIT 1) AS CurrentWinStreak,
+  MAX(LongestWinStreak) AS LongestWinStreak,
+  (SUM(VyhraProhra) / COUNT(*)) * 100 AS ProcentoVyhry
+FROM 
+  Statistiky S
+WHERE 
+  UzivateleID = 1;
+
+
+
+zobrazení guess distribution
+
+  SELECT 
+  PokusUhodnuti,
+  COUNT(*) AS PocetVyhranychHer
+FROM 
+  Statistiky
+WHERE 
+  UzivateleID = 1 AND VyhraProhra = 1
+GROUP BY 
+  PokusUhodnuti
+ORDER BY 
+  PokusUhodnuti;
+
+
+
+  vkládání do tabulky
+
+  call InsertStatistiky(1,2,1);

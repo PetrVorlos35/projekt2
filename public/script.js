@@ -125,6 +125,7 @@ function chechWin(playerName, row, player, playerData) {
       guessBtn.disabled = true;
       userinput.disabled = true;
       userinput.placeholder = `Vyhrál jsi!! Počet pokusů: ${guesses}`;
+      saveStats(idUser, guesses, 1);
       return true;
     }else{
       if (guesses < 8) {
@@ -214,7 +215,38 @@ function lost(row) {
     cell.style.backgroundColor = 'red';
     cell.style.color = 'white';
   });
+  saveStats(idUser, guesses, 0);
 }
+
+
+
+function saveStats(userID, guesses, win) {
+  console.log(userID, guesses, win);
+  // Předpokládám, že userID, guesses, a win jsou správně nastaveny
+  fetch('/save-stats', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userID, guesses, win })
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to save stats');
+      }
+      return response.text();
+  })
+  .then(result => {
+      console.log(result);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+}
+
+
+
+
 
   async function fetchSinglePlayer(playerName) {
     const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
