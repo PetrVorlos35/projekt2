@@ -43,19 +43,68 @@ app.post('/register', (req, res) => {
     });
   });
 
-  app.post('/save-stats', (req, res) => {
-    const { userID, guesses, win } = req.body;
+  app.get('/saveStats', (req, res) => {
+    // Přečtení parametrů z query stringu
+    const { userId, attempts, winLoss } = req.query;
+  
+    // Zde byste umístili logiku pro zpracování a ukládání dat do databáze
+    console.log(`Ukládám statistiky pro uživatele ${userId}: pokusy = ${attempts}, výsledek = ${winLoss}`);
+
     const sql = 'CALL InsertStatistiky(?, ?, ?)';
-    db.query(sql, [userID, guesses, win], (err, result) => {
-        if (err) {
-            console.error('Failed to insert stats: ' + err.stack);
-            res.status(500).send('Failed to save stats');
-            return;
-        }
-        console.log('Stats saved successfully');
-        res.send('Stats saved successfully');
+    db.query(sql, [userId, attempts, winLoss], (err, result) => {
+      if (err) throw err;
+      console.log('Stats saved successfully');
+      // res.redirect('/index.html');
     });
+  });
+
+
+app.get('/statistiky', (req, res) => {
+  const { userId } = req.query; 
+  console.log('Získávám statistiky pro uživatele s ID:', userId);
+  const sql = `
+    SELECT 
+      UzivateleID,
+      COUNT(*) AS PocetOdehranychHer,
+      (SELECT CurrentWinStreak FROM Statistiky WHERE UzivateleID = S.UzivateleID ORDER BY ID DESC LIMIT 1) AS CurrentWinStreak,
+      MAX(LongestWinStreak) AS LongestWinStreak,
+      (SUM(VyhraProhra) / COUNT(*)) * 100 AS ProcentoVyhry
+    FROM 
+      Statistiky S
+    WHERE 
+      UzivateleID = ?;`;
+
+  db.query(sql, [userId], (err, result) => {
+    if (err) res.send(err);
+    else res.json(result[0]);
+  });
 });
+
+app.get('/vyhry', (req, res) => {
+  const { userId } = req.query;
+  console.log('Získávám guess distribution pro uživatele s ID:', userId);
+
+
+  const sql = `
+    SELECT 
+      PokusUhodnuti,
+      COUNT(*) AS PocetVyhranychHer
+    FROM 
+      Statistiky
+    WHERE 
+      UzivateleID = ? AND VyhraProhra = 1
+    GROUP BY 
+      PokusUhodnuti
+    ORDER BY 
+      PokusUhodnuti;`;
+
+  db.query(sql, [userId], (err, result) => {
+    if (err) res.send(err);
+    else res.json(result);
+  });
+});
+
+
 
 
   

@@ -218,30 +218,11 @@ function lost(row) {
   saveStats(idUser, guesses, 0);
 }
 
-
-
-function saveStats(userID, guesses, win) {
-  console.log(userID, guesses, win);
-  // Předpokládám, že userID, guesses, a win jsou správně nastaveny
-  fetch('/save-stats', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userID, guesses, win })
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Failed to save stats');
-      }
-      return response.text();
-  })
-  .then(result => {
-      console.log(result);
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });
+function saveStats(userId, attempts, winLoss) {
+  fetch(`http://localhost:3000/saveStats?userId=${userId}&attempts=${attempts}&winLoss=${winLoss}`)
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));  
 }
 
 
