@@ -61,7 +61,7 @@ app.post('/register', (req, res) => {
 
 app.get('/statistiky', (req, res) => {
   const { userId } = req.query; 
-  console.log('Získávám statistiky pro uživatele s ID:', userId);
+  // console.log('Získávám statistiky pro uživatele s ID:', userId);
   const sql = `
     SELECT 
       UzivateleID,
@@ -82,7 +82,7 @@ app.get('/statistiky', (req, res) => {
 
 app.get('/vyhry', (req, res) => {
   const { userId } = req.query;
-  console.log('Získávám guess distribution pro uživatele s ID:', userId);
+  // console.log('Získávám guess distribution pro uživatele s ID:', userId);
 
 
   const sql = `

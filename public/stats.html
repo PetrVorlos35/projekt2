@@ -75,24 +75,103 @@
         </div>
   
         <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8">
-          <h2 class="text-2xl font-bold mb-4">Guess distribution</h2>
+          <h2 class="text-2xl font-bold mb-4 text-white">Guess distribution</h2>
           <div class="grid gap-4">
-            <div id="1">1:</div>
-            <div id="2">2:</div>
-            <div id="3">3:</div>
-            <div id="4">4:</div>
-            <div id="5">5:</div>
-            <div id="6">6:</div>
-            <div id="7">7:</div>
-            <div id="8">8:</div>
+            <!-- Repeat for each number, adjust width and value accordingly -->
+            <div class="flex items-center space-x-2">
+              <div  class="text-white">1:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="1" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="text-white">2:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="2" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="text-white">3:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="3" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="text-white">4:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="4" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="text-white">5:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="5" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="text-white">6:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="6" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="text-white">7:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="7" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="text-white">8:</div>
+              <div class="flex-1 bg-gray-700 rounded-full h-4 relative">
+                <div class="bg-green-600 h-4 rounded-full flex justify-end items-center pr-2 text-white text-sm" >
+                  <span id="8" class="progress-value pr-2 text-white text-sm"></span></div> 
+              </div>
+            </div>
           </div>
         </div>
+        
+        
+        
+        
       </div>
     </div>
   </div>
-  <!-- <script src="script.js"></script> -->
+  
   <script>
-// let idUser;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+  // Získání všech hodnot pokusů a jejich transformace na čísla
+  const progressValues = Array.from(document.querySelectorAll('.progress-value')).map(span => parseInt(span.value, 10) || 0);
+
+  // Najít maximální hodnotu
+  const maxValue = Math.max(...progressValues);
+
+  // Zkontrolujte, zda maxValue není nula nebo NaN
+  if (!maxValue) {
+    console.error('Chyba: Maximální hodnota je nula nebo není číslo.');
+    return;
+  }
+
+  // Nastavit šířku progress barů podle jejich hodnoty
+  document.querySelectorAll('.progress-value').forEach(span => {
+    const value = parseInt(span.textContent, 10) || 0;
+    const percentage = (value / maxValue) * 100;
+    span.parentNode.style.width = `${percentage}%`;
+    span.textContent = value; // Opětovné nastavení textu spanu (nepotřebné, pokud se text nemění)
+  });
+});
+
+
+
+
+
 
     fetch('/get-user-info')
       .then(response => {
@@ -130,7 +209,7 @@
     .then(data => {
       
         for(let i = 1; i <= 8; i++) {
-            document.getElementById(i.toString()).textContent = `${i}: 0`;
+            document.getElementById(i.toString()).textContent = 0;
         }
 
         data.forEach(row => {
@@ -141,7 +220,8 @@
         const divElement = document.getElementById(pokusId);
         
     if (divElement) {
-        divElement.textContent = `${pokusId}: ${pocetVyhranychHer}`;
+        divElement.textContent = pocetVyhranychHer;
+        divElement.value = pocetVyhranychHer;
     }
 });
 
@@ -153,7 +233,5 @@
           console.error('There has been a problem with your fetch operation:', error);
       });
   </script>
-    
-  
 </body>
 </html>
