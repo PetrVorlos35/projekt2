@@ -61,6 +61,28 @@
     </table>
   </div>
 
+
+  <div class="flex justify-center">
+    <button onclick="togglePopup()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      Open Popup
+    </button>
+  </div>
+  
+  <div id="popup" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white rounded-lg p-8">
+      <p>This is a pop-up window.</p>
+      <button onclick="togglePopup()" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Close</button>
+    </div>
+  </div>
+  
+  <script>
+    function togglePopup() {
+      const popup = document.getElementById('popup');
+      popup.classList.toggle('hidden');
+    }
+  </script>
+    
+
   <!-- Include your script.js -->
   <script src="script.js"></script>
   <!-- Tailwind doesn't require jQuery or Popper.js -->

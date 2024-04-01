@@ -9,12 +9,14 @@
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="logo3.png" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
-<body>
+<body class="bg-gray-900">
 <div class="min-h-screen bg-gray-900 text-white">
 
 
-  <nav class="flex justify-between items-center p-4 border-b border-gray-800">
+  <nav class="flex justify-between items-center p-4 border-b border-gray-800 sticky top-0 bg-gray-900">
     <div class="flex items-center">
       <button class="p-2 mr-4 text-white">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,14 +43,19 @@
     </div>
   </nav>
 
-<!-- <img src="logo3.png" alt="logo" id="logo" class="text-center"> -->
 
-<div class="game text-center p-2 position-relative top-50">
+
+<div class="game text-center p-2 position-relative top-50 flex flex-col">
     <div class="d-flex flex-column align-items-center">
-        <input type="text" id="searchBar" class="form-control w-25 m-auto m-2 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
-        <ul id="suggestions" class="form-control w-25 m-auto m-2 position-absolute" style="top: 46%; z-index: 100; border: none;"></ul>
+        <input type="text" id="searchBar" class="form-control w-25 mb-8 m-3 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
+        <ul id="suggestions" class="form-control w-25 m-2 position-absolute" style="top: 46%; z-index: 100; border: none;"></ul>
+        <button id="guessBtn" class="btn btn-success w-min" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
+        <div class="flex justify-center" id="popupBtn">
+          <button onclick="togglePopup()" class="btn btn-success">
+            View result
+          </button>
+        </div>
     </div>
-    <button id="guessBtn" class="btn btn-success m-3" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
     <div class="guesses">
       
     </div>
@@ -56,10 +63,8 @@
 
 <div id="login"></div>
 
-<!-- <div id="user-info"></div> -->
 
-
-<div class="container mt-3">
+<div class="container mt-3 w-3/4">
   <table class="table player-table">
       <thead>
           <tr class="header">
@@ -78,11 +83,77 @@
       </tbody>
   </table>
 </div>
+
+<div class="flex justify-center">
+  <button id="playAgainBtn" class="btn btn-success m-3" onclick="window.location.href = 'index.html';" >
+    Play again
+  </button>
+</div>
+
+
+
+
+
+
+<div id="popup" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
+  <div class="bg-gray-900 rounded-lg p-8 text-center">
+    <p id="winLoss" class="text-white"></p>
+    <h2 class="text-xl text-white mb-4">The Player is...</h2>
+    <p class="text-3xl text-white font-bold mb-4" id="playerName"></p>
+    <div class="grid grid-cols-2 gap-4">
+      <p class="text-white">Team: <span class="font-bold" id="team"></span></p>
+      <p class="text-white">Division: <span class="font-bold" id="division"></span></p>
+      <p class="text-white">Conference: <span class="font-bold" id="conference"></span></p>
+      <p class="text-white">Position: <span class="font-bold" id="position"></span></p>
+      <p class="text-white">Height: <span class="font-bold" id="height"></span></p>
+      <p class="text-white">Number: <span class="font-bold" id="number"></span></p>
+    </div>
+    <button onclick="togglePopup()" class="mt-6 py-2 px-4 bg-green-500 text-white font-bold rounded hover:bg-green-700">Close</button>
+  </div>
+</div>
+
+
+
 <script src="script.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.6.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
+
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const success = getQueryParam('success');
+        if (success === '1') {
+            showToastWithAnimation();
+        }
+    });
+
+    function showToastWithAnimation() {
+    const toast = Toastify({
+        text: "Login successful!",
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)"
+        },
+        className: "toastify-example toastify-fade-in"
+    });
+
+    toast.showToast();
+}
+
+</script>
+
+<script>
+
+
 
 let idUser;
 
@@ -91,7 +162,7 @@ fetch('/get-user-info')
     if (response.ok) {
         return response.json();
     }
-    // Pokud server odpoví stavovým kódem, který není OK (např. 401 nebo 403), považujeme to za "není uživatel"
+
     if(response.status === 401 || response.status === 403) {
         console.log("není uživatel");
         window.location.href = '/login.html';
@@ -101,7 +172,7 @@ fetch('/get-user-info')
 .then(data => {
     console.log('User Info:', data);
     idUser = data.id;
-    // Display user info on the page
+
     document.getElementById('user-info').textContent = `${data.username}`;
 })
 .catch(error => {

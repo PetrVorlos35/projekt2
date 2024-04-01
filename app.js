@@ -108,25 +108,27 @@ app.get('/vyhry', (req, res) => {
 
 
   
-  app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-  
-    const sql = 'SELECT ID, Username FROM Uzivatele WHERE Username = ? AND Heslo = ?';
-    db.query(sql, [username, password], (err, results) => {
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  const sql = 'SELECT ID, Username FROM Uzivatele WHERE Username = ? AND Heslo = ?';
+  db.query(sql, [username, password], (err, results) => {
       if (err) throw err;
-  
+
       if (results.length > 0) {
-        const user = results[0]; 
-        const token = jwt.sign({ id: user.ID, username: user.Username }, jwtSecret, { expiresIn: '1h' });
-        
-        res.cookie('token', token, { httpOnly: true, secure: true }); 
-        res.redirect('/index.html');
+          const user = results[0]; 
+          const token = jwt.sign({ id: user.ID, username: user.Username }, jwtSecret, { expiresIn: '1h' });
+      
+          res.cookie('token', token, { httpOnly: true, secure: true }); 
+          // Redirect with success message as a query parameter
+          res.redirect('/index.html?success=1');
       } else {
-        console.log('Incorrect Username and/or Password!');
-        res.status(401).send('Incorrect Username and/or Password!');
+          console.log('Incorrect Username and/or Password!');
+          res.status(401).send('Incorrect Username and/or Password!');
       }
-    });
+  });
 });
+
 
 
 app.get('/get-user-info', (req, res) => {

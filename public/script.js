@@ -104,6 +104,7 @@ var rndStats;
 
 
 let guesses = 1;
+let wonOrLost;
 var userinput = document.getElementById("searchBar");
 function getInput() {
     userinput.value = '';
@@ -114,6 +115,12 @@ let height = '';
 let No = '';
 var guessBtn = document.getElementById('guessBtn')
 
+var playAgainBtn = document.getElementById('playAgainBtn');
+playAgainBtn.hidden = true;
+
+const popupBtn = document.getElementById('popupBtn');
+popupBtn.hidden = true;
+
 function chechWin(playerName, row, player, playerData) {
     console.log(randomPlayerName);
     console.log(playerName);
@@ -123,8 +130,11 @@ function chechWin(playerName, row, player, playerData) {
         cell.style.color = 'white';
       });
       guessBtn.disabled = true;
+      guessBtn.hidden = true;
+      popupBtn.hidden = false;
       userinput.disabled = true;
       userinput.placeholder = `Vyhrál jsi!! Počet pokusů: ${guesses}`;
+      wonOrLost = 1;
       saveStats(idUser, guesses, 1);
       return true;
     }else{
@@ -210,15 +220,53 @@ function chechWin(playerName, row, player, playerData) {
 function lost(row) {
   userinput.placeholder = `Prohrál jsi!`;
   guessBtn.disabled = true;
+  guessBtn.hidden = true;
+  popupBtn.hidden = false;
   userinput.disabled = true;
   Array.from(row.cells).forEach((cell) => {
     cell.style.backgroundColor = 'red';
     cell.style.color = 'white';
   });
+  wonOrLost = 0;
   saveStats(idUser, guesses, 0);
 }
 
+function inchesToFeetAndInches(inches) {
+  var feet = Math.floor(inches / 12);
+  var remainingInches = inches % 12;
+  return [feet, remainingInches];
+}
+
+function togglePopup() {
+  const popup = document.getElementById('popup');
+  popup.classList.toggle('hidden');
+  const winPlayer = document.getElementById('playerName');
+  const winLossText = document.getElementById('winLoss');
+  const teamName = document.getElementById('team');
+  const division = document.getElementById('division');
+  const conference = document.getElementById('conference');
+  const position = document.getElementById('position');
+  const height = document.getElementById('height');
+  const No = document.getElementById('number');
+
+  let convertion = inchesToFeetAndInches(randomPlayerHeight);
+
+  
+  winPlayer.innerHTML = randomPlayerName;
+  winLossText.innerHTML = wonOrLost === 1 ? 'Vyhrál jsi!' : 'Prohrál jsi!';
+  teamName.innerHTML = rndTeam;
+  division.innerHTML = rndDivision;
+  conference.innerHTML = rndConf;
+  position.innerHTML = rndPosition;
+  height.innerHTML = convertion[0] + " ft" + " " + convertion[1] + " in";
+  No.innerHTML = randomPlayerNo;
+
+}
+
 function saveStats(userId, attempts, winLoss) {
+  togglePopup();
+  playAgainBtn.hidden = false;
+  popupBtn.hidden = false;
   fetch(`http://localhost:3000/saveStats?userId=${userId}&attempts=${attempts}&winLoss=${winLoss}`)
     .then(response => response.json())
     .then(data => console.log(data))
