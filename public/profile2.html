@@ -118,94 +118,101 @@ resizeCanvas();
 
 window.addEventListener('resize', resizeCanvas);
 
-    const labels = ["1", "2", "3", "4", "5", "6", "7", "8"];
-    const data = {
-      labels: labels,
-      datasets: [{
-        axis: 'y',
-        label: '',
-        data: [0, 0, 0, 0, 0, 0, 0, 0],
-        fill: false,
-        backgroundColor: 'rgb(67, 148, 108)',
-        borderRadius: 10 
-      }]
-    };
+    // const labels = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    // const data = {
+    //   labels: labels,
+    //   datasets: [{
+    //     axis: 'y',
+    //     label: '',
+    //     data: [0, 0, 0, 0, 0, 0, 0, 0],
+    //     fill: false,
+    //     backgroundColor: 'rgb(67, 148, 108)',
+    //     borderRadius: 10 
+    //   }]
+    // };
   
 
-    const config = {
-      type: 'bar',
-      data: data,
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: {
-            display: false 
-          },
-          y: {
-            display: true, 
-            beginAtZero: true 
-          }
-        },
-        plugins: {
-          legend: {
-            display: false 
-          },
+    // const config = {
+    //   type: 'bar',
+    //   data: data,
+    //   options: {
+    //     indexAxis: 'y',
+    //     scales: {
+    //       x: {
+    //         display: false 
+    //       },
+    //       y: {
+    //         display: true, 
+    //         beginAtZero: true 
+    //       }
+    //     },
+    //     plugins: {
+    //       legend: {
+    //         display: false 
+    //       },
 
-          datalabels: {
-            display: true, 
-            anchor: 'end',
-            align: 'end',
-            color: 'black'
-          }
-        }
-      }
-    };
+          // datalabels: {
+          //   display: true, 
+          //   anchor: 'end',
+          //   align: 'end',
+          //   color: 'black'
+          // }
+    //     }
+    //   }
+    // };
   
     function createChart(labels, data) {
-    const chartData = {
-      labels: labels,
-      datasets: [{
-        axis: 'y',
-        label: 'Počet výherních her',
-        data: data,
-        fill: false,
-        backgroundColor: 'rgb(67, 148, 108)',
-        borderRadius: 10 
-      }]
-    };
+  const chartData = {
+    labels: labels,
+    datasets: [{
+      axis: 'y',
+      label: 'Počet výherních her',
+      data: data,
+      fill: false,
+      backgroundColor: 'rgb(67, 148, 108)',
+      borderRadius: 10 
+    }]
+  };
 
-    const config = {
-      type: 'bar',
-      data: chartData,
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: {
-            display: false
-          },
-          y: {
-            display: true,
-            beginAtZero: true
-          }
+  const config = {
+    type: 'bar',
+    data: chartData,
+    options: {
+      indexAxis: 'y',
+      scales: {
+        x: {
+          display: false
         },
-        plugins: {
-          legend: {
-            display: false
-          },
-          datalabels: {
-            display: true,
-            anchor: 'end',
-            align: 'end',
-            color: 'black'
-          }
+        y: {
+          display: true,
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        datalabels: {
+          display: true,
+          color: 'white',
+          anchor: 'end',
+          align: 'right',
+          offset: 10, // Offset from the end of the bar
         }
       }
-    };
+    },
+    plugins: [ChartDataLabels]
+  };
 
-    const ctx = document.getElementById('myChart').getContext('2d');
-    new Chart(ctx, config);
- 
+  const ctx = document.getElementById('myChart').getContext('2d');
+  if (window.myBarChart) {
+    window.myBarChart.destroy();
   }
+  window.myBarChart = new Chart(ctx, config);
+}
+
+
+
 
 </script>
 <script>
