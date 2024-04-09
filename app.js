@@ -50,7 +50,7 @@ app.post('/register', (req, res) => {
     // Zde byste umístili logiku pro zpracování a ukládání dat do databáze
     console.log(`Ukládám statistiky pro uživatele ${userId}: pokusy = ${attempts}, výsledek = ${winLoss}`);
 
-    const sql = 'CALL InsertStatistiky(?, ?, ?)';
+    const sql = 'CALL InsertStatistiky2(?, ?, ?)';
     db.query(sql, [userId, attempts, winLoss], (err, result) => {
       if (err) throw err;
       console.log('Stats saved successfully');
