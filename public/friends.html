@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friends</title>
+  <link rel="shortcut icon" href="logo3.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white">
+<div class="min-h-screen bg-gray-900 text-white">
+
+    <nav class="flex justify-between items-center p-4 border-b border-gray-800 sticky top-0 bg-gray-900">
+        <a href="index.html" class="flex items-center">
+            <img src="logo3.png" alt="NBA Logo" class="h-8 mr-2"> 
+            <span class="text-xl font-semibold">NBA Guessing Game</span>
+        </a>
+        <div class="flex items-center">
+            <button class="p-2">
+                <a href="profile2.html" class="flex items-center">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
+                  </svg>
+                  <span class="text-xs font-semibold ml-2" id="user-info"></span>
+              </a>
+              
+              </button>
+          <a href="/logout" class="ml-4 text-white text-sm font-medium">Logout</a>
+        </div>
+    </nav>
+
+  <div class="flex flex-col md:flex-row w-full md:w-3/4 m-auto">
+
+    <div class="flex-1 p-8">
+        <div class="mb-4">
+            <a href="profile2.html" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+              <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Profile
+            </a>
+          </div>
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Your Friends</h2>
+        <div class="space-y-4">
+          <!-- Dynamically list friends here -->
+          <div class="flex items-center justify-between">
+            <span class="font-medium">John Doe</span>
+            <button class="text-xs text-blue-500">View Profile</button>
+          </div>
+          <!-- Repeat for each friend -->
+        </div>
+        <div class="mt-6">
+          <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-400">
+            Add New Friend
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+
+
+
+    let idUser;
+    
+    fetch('/get-user-info')
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+    
+        if(response.status === 401 || response.status === 403) {
+            console.log("není uživatel");
+            window.location.href = '/login.html';
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(data => {
+        console.log('User Info:', data);
+        idUser = data.id;
+    
+        document.getElementById('user-info').textContent = `${data.username}`;
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+    </script>
+</body>
+</html>
