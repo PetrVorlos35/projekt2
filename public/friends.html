@@ -51,7 +51,7 @@
           <!-- Repeat for each friend -->
         </div>
         <div class="mt-6">
-          <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-400">
+          <button class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800" onclick="togglePopup()">
             Add New Friend
           </button>
         </div>
@@ -60,10 +60,16 @@
   </div>
 
 </div>
+
+<div id="popup" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-gray-900 rounded-lg p-8 relative text-center">
+      <button onclick="togglePopup()" class="absolute top-0 right-0 mt-2 mr-2 text-white text-2xl font-bold">&times;</button>
+      <h2 class="text-xl text-white mb-4">Send Friend Requests</h2>
+      <div id="userList" class="text-white"></div>
+    </div>
+  </div>
+
 <script>
-
-
-
     let idUser;
     
     fetch('/get-user-info')
@@ -87,6 +93,44 @@
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
     });
+
+    function togglePopup() {
+        const popup = document.getElementById('popup');
+        popup.classList.toggle('hidden');
+        displayUsers();
+    }
+
+    let users = [
+        { name: "Alice", userId: 1 },
+        { name: "Bob", userId: 2 },
+        { name: "Charlie", userId: 3 }
+    ];
+
+    function displayUsers() {
+        let userList = document.getElementById("userList");
+        userList.innerHTML = ''; // Clear the current list
+        users.forEach(user => {
+            let userDiv = document.createElement('div');
+            userDiv.classList.add('flex', 'justify-between', 'items-center', 'mb-4');
+            
+            let userNameSpan = document.createElement('span');
+            userNameSpan.textContent = user.name;
+            userNameSpan.classList.add('text-lg', 'font-bold');
+            
+            let addButton = document.createElement('button');
+            addButton.textContent = 'Add Friend';
+            addButton.classList.add('py-2', 'px-4', 'bg-blue-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-blue-700');
+            addButton.onclick = function() { sendFriendRequest(user.userId); };
+            
+            userDiv.appendChild(userNameSpan);
+            userDiv.appendChild(addButton);
+            
+            userList.appendChild(userDiv);
+        });
+    }
+
+
+
     </script>
 </body>
 </html>
