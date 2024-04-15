@@ -17,7 +17,7 @@
         </a>
         <div class="flex items-center">
             <button class="p-2">
-                <a href="profile2.html" class="flex items-center">
+                <a href="profile2.html" class="flex items-center hover:text-green-500">
                   <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.121A8.414 8.414 0 0112 20.414a8.414 8.414 0 016.879-3.293M12 4a4 4 0 110 8 4 4 0 010-8z" />
                   </svg>
@@ -25,7 +25,8 @@
               </a>
               
               </button>
-          <a href="/logout" class="ml-4 text-white text-sm font-medium">Logout</a>
+          <a href="/logout" class="ml-4 text-sm font-medium hover:text-red-500">Logout</a>
+
         </div>
     </nav>
 
@@ -62,12 +63,17 @@
 </div>
 
 <div id="popup" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
-    <div class="bg-gray-900 rounded-lg p-8 relative text-center">
+    <div class="bg-gray-900 w-1/2 max-w-2xl h-96 rounded-lg p-8 relative text-center">
       <button onclick="togglePopup()" class="absolute top-0 right-0 mt-2 mr-2 text-white text-2xl font-bold">&times;</button>
       <h2 class="text-xl text-white mb-4">Send Friend Requests</h2>
-      <div id="userList" class="text-white"></div>
+      <!-- Seznam uživatelů je nyní uvnitř divu, který bude scrolovatelný -->
+      <div id="userList" class="overflow-y-auto text-white" style="max-height: calc(100% - 3rem);"> <!-- 3rem je zhruba výška hlavičky + tlačítka -->
+        <!-- Obsah uživatelů se sem načítá -->
+      </div>
     </div>
   </div>
+  
+  
 
 <script>
     let idUser;
@@ -97,14 +103,10 @@
     function togglePopup() {
         const popup = document.getElementById('popup');
         popup.classList.toggle('hidden');
-        displayUsers();
+        fetchUsers();
     }
 
-    let users = [
-        { name: "Alice", userId: 1 },
-        { name: "Bob", userId: 2 },
-        { name: "Charlie", userId: 3 }
-    ];
+    let users = [];
 
     function displayUsers() {
         let userList = document.getElementById("userList");
@@ -114,19 +116,30 @@
             userDiv.classList.add('flex', 'justify-between', 'items-center', 'mb-4');
             
             let userNameSpan = document.createElement('span');
-            userNameSpan.textContent = user.name;
+            userNameSpan.textContent = user.Username;
             userNameSpan.classList.add('text-lg', 'font-bold');
             
             let addButton = document.createElement('button');
             addButton.textContent = 'Add Friend';
             addButton.classList.add('py-2', 'px-4', 'bg-blue-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-blue-700');
-            addButton.onclick = function() { sendFriendRequest(user.userId); };
+            addButton.onclick = function() { sendFriendRequest(user.ID); };
             
             userDiv.appendChild(userNameSpan);
-            userDiv.appendChild(addButton);
+            if (user.ID != idUser) {
+                userDiv.appendChild(addButton);
+            }
             
             userList.appendChild(userDiv);
         });
+    }
+
+    function fetchUsers() {
+        fetch('/users')
+        .then(response => response.json())
+        .then(data => {
+            users = data;
+            displayUsers();
+        })
     }
 
 

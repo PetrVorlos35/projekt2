@@ -207,6 +207,13 @@ app.get('/random', (req, res) => {
     res.json(randomPlayer);
   });
 
+  app.get('/users', (req, res) => {
+    db.query('SELECT * FROM Uzivatele', (err, results) => {
+      if (err) throw err;
+      res.json(results);
+    });
+  });
+
   
 
   const PORT = 3000;
