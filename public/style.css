@@ -42,3 +42,7 @@
   .toastify-fade-in {
     animation: fade-in 0.5s ease-in-out;
   }
+
+.player-row > td{
+  padding: 5px;
+}

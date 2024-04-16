@@ -62,8 +62,6 @@
     </div>
   </nav>
 
-
-
 <div class="game text-center p-2 position-relative top-50 flex flex-col">
     <div class="d-flex flex-column align-items-center">
         <input type="text" id="searchBar" class="form-control w-25 mb-8 m-3 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
@@ -83,24 +81,44 @@
 <div id="login"></div>
 
 
-<div class="container mt-3 w-3/4">
-  <table class="table player-table">
-      <thead>
-          <tr class="header">
-              <th scope="col">Player Name</th>
-              <th scope="col">Team Name</th>
-              <th scope="col">Conference</th>
-              <th scope="col">Division</th>
-              <th scope="col">Position</th>
-              <th scope="col">Height</th>
-              <th scope="col">Number</th>
-          </tr>
-      </thead>
-      <tbody id="playerData">
-          <!-- Player data will be dynamically inserted here -->
-      </tbody>
-  </table>
+<div class="container mx-auto mt-3 px-4">
+  <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="inline-block min-w-full sm:px-6 lg:px-8">
+      <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+              <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Player Name
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Team Name
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Conference
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Division
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Position
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Height
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Number
+                  </th>
+              </tr>
+          </thead>
+          <tbody id="playerData" class="bg-white text-black p-6 divide-y divide-gray-200">
+              <!-- Player data will be dynamically inserted here -->
+          </tbody>
+      </table>
+    </div>
+  </div>
 </div>
+
+
 
 <div class="flex justify-center">
   <button id="playAgainBtn" class="btn btn-success m-3" onclick="window.location.href = 'index.html';" >
