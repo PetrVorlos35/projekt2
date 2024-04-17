@@ -214,7 +214,30 @@ app.get('/random', (req, res) => {
     });
   });
 
+  app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
   
+  app.post('/send-friend-request', (req, res) => {
+    const sender_id = req.body.sender_id;
+    const receiver_id = req.body.receiver_id;
+    // console.log(req.body); 
+
+    if (!sender_id || !receiver_id) {
+      return res.status(400).send('Sender and receiver IDs are required.');
+    }
+  
+    const sql = 'INSERT INTO friend_requests (sender_id, receiver_id, status) VALUES (?, ?, ?)';
+    db.query(sql, [sender_id, receiver_id, 'pending'], (err, result) => {
+      if (err) {
+        console.error('Error sending friend request:', err);
+        return res.status(500).send('Error sending friend request.');
+      }
+      // console.log('Friend request sent successfully');
+      res.status(200).send('Friend request sent successfully.');
+    });
+  });
+  
+
+
 
   const PORT = 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
