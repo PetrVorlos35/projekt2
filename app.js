@@ -214,7 +214,8 @@ app.get('/random', (req, res) => {
     });
   });
 
-  app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
+app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
+
   
   app.post('/send-friend-request', (req, res) => {
     const sender_id = req.body.sender_id;
@@ -236,6 +237,97 @@ app.get('/random', (req, res) => {
     });
   });
   
+  app.post('/accept-friend-request', (req, res) => {
+    const sender_id = req.body.sender_id;
+    const receiver_id = req.body.receiver_id;
+  
+    if (!sender_id || !receiver_id) {
+      return res.status(400).send('Sender and receiver IDs are required.');
+    }
+  
+    const sql = 'UPDATE friend_requests SET status = "accepted" WHERE sender_id = ? AND receiver_id = ?';
+    db.query(sql, [sender_id, receiver_id], (err, result) => {
+      if (err) {
+        console.error('Error accepting friend request:', err);
+        return res.status(500).send('Error accepting friend request.');
+      }
+      // console.log('Friend request accepted successfully');
+      res.status(200).send('Friend request accepted successfully.');
+    });
+  });
+
+  app.post('/reject-friend-request', (req, res) => {
+    const sender_id = req.body.sender_id;
+    const receiver_id = req.body.receiver_id;
+  
+    if (!sender_id || !receiver_id) {
+      return res.status(400).send('Sender and receiver IDs are required.');
+    }
+  
+    const sql = 'UPDATE friend_requests SET status = "declined" WHERE sender_id = ? AND receiver_id = ?';
+    db.query(sql, [sender_id, receiver_id], (err, result) => {
+      if (err) {
+        console.error('Error rejecting friend request:', err);
+        return res.status(500).send('Error rejecting friend request.');
+      }
+      // console.log('Friend request rejected successfully');
+      res.status(200).send('Friend request rejected successfully.');
+    });
+  });
+
+  app.post('/remove-friend', (req, res) => {
+    const user_id = req.body.user_id;
+    const friend_id = req.body.friend_id;
+  
+    if (!user_id || !friend_id) {
+      return res.status(400).send('User and friend IDs are required.');
+    }
+  
+    const sql = 'DELETE FROM friend_requests WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)';
+    db.query(sql, [user_id, friend_id, friend_id, user_id], (err, result) => {
+      if (err) {
+        console.error('Error removing friend:', err);
+        return res.status(500).send('Error removing friend.');
+      }
+      // console.log('Friend removed successfully');
+      res.status(200).send('Friend removed successfully.');
+    });
+  });
+
+  app.get('/show-friend-requests', (req, res) => {
+    const receiver_id = req.query.receiver_id;
+
+    if (!receiver_id) {
+      return res.status(400).send('Receiver ID is required.');
+    }
+
+    const sql = "SELECT u.id, u.Username, fr.created_at FROM ( SELECT u.Username, MIN(fr.id) AS min_id FROM friend_requests AS fr JOIN Uzivatele AS u ON u.ID = fr.sender_id WHERE fr.receiver_id = ? AND fr.status = 'pending' GROUP BY u.Username ) AS sub JOIN friend_requests AS fr ON fr.id = sub.min_id JOIN Uzivatele AS u ON u.ID = fr.sender_id;";
+    db.query(sql, [receiver_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching friend requests:', err);
+        return res.status(500).send('Error fetching friend requests.');
+      }
+      res.json(results);
+    });
+  });
+
+  app.get('/show-friends', (req, res) => {
+    const user_id = req.query.user_id;
+  
+    if (!user_id) {
+      return res.status(400).send('User ID is required.');
+    }
+  
+    const sql = 'SELECT u.id, u.Username FROM Uzivatele AS u JOIN ( SELECT sender_id AS id FROM friend_requests WHERE receiver_id = ? AND status = "accepted" UNION SELECT receiver_id AS id FROM friend_requests WHERE sender_id = ? AND status = "accepted" ) AS sub ON u.id = sub.id;';
+    db.query(sql, [user_id, user_id], (err, results) => {
+      if (err) {
+        console.error('Error fetching friends:', err);
+        return res.status(500).send('Error fetching friends.');
+      }
+      res.json(results);
+    });
+  });
+
 
 
 

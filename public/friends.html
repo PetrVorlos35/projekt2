@@ -98,11 +98,13 @@
     <div class="bg-gray-900 w-1/2 max-w-2xl h-96 rounded-lg p-8 relative text-center">
       <button onclick="togglePopup()" class="absolute top-0 right-0 mt-2 mr-2 text-white text-2xl font-bold">&times;</button>
       <h2 class="text-xl text-white mb-4">Send Friend Requests</h2>
-      <div id="userList" class="overflow-y-auto text-white" style="max-height: calc(100% - 3rem);">
+      <input type="text" id="searchInput" onkeyup="filterUsers()" class="w-full bg-gray-800 text-white px-4 py-2 rounded-md mb-4" placeholder="Search users...">
+      <div id="userList" class="overflow-y-auto text-white" style="max-height: calc(100% - 5rem);">
         <!-- Obsah uživatelů se sem načítá -->
       </div>
     </div>
   </div>
+  
   
   
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -126,6 +128,8 @@
     .then(data => {
         console.log('User Info:', data);
         idUser = data.id;
+        showFriendRequests();
+        showFriends();
     
         document.getElementById('user-info').textContent = `${data.username}`;
     })
@@ -156,8 +160,6 @@
             addButton.textContent = 'Add Friend';
             addButton.classList.add('py-2', 'px-4', 'bg-blue-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-blue-700');
             addButton.onclick = function() { sendFriendRequest(user.ID); };
-            // console.log(user.ID);
-            // console.log(idUser);
             
             userDiv.appendChild(userNameSpan);
             if (user.ID != idUser) {
@@ -168,12 +170,57 @@
         });
     }
 
+    function filterUsers() {
+        let input = document.getElementById('searchInput');
+        let filter = input.value.toLowerCase();
+        let userDivs = document.querySelectorAll('#userList > div');
+
+        userDivs.forEach(userDiv => {
+            let userName = userDiv.querySelector('span').textContent.toLowerCase();
+            if (userName.includes(filter)) {
+                userDiv.style.display = 'flex';
+            } else {
+                userDiv.style.display = 'none';
+            }
+        });
+    }
+
+
     function fetchUsers() {
         fetch('/users')
         .then(response => response.json())
         .then(data => {
             users = data;
             displayUsers();
+        })
+    }
+
+    function showFriends(){
+        fetch(`/show-friends?user_id=${idUser}`)
+        .then(response => response.json())
+        .then(data => {
+            let friendList = document.getElementById("friendList");
+            friendList.innerHTML = '';
+            data.forEach(friend => {
+                let friendDiv = document.createElement('div');
+                friendDiv.classList.add('flex', 'justify-between', 'items-center', 'mb-4');
+                
+                let userNameSpan = document.createElement('span');
+                userNameSpan.textContent = friend.Username;
+                userNameSpan.classList.add('text-lg', 'font-bold');
+
+                let deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add('py-2', 'px-4', 'bg-red-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-red-700');
+                deleteButton.onclick = function() { deleteFriend(friend.id); }; // Ensure to use correct case for ID
+
+                
+                friendDiv.appendChild(userNameSpan);
+                
+                friendDiv.appendChild(deleteButton);
+
+                friendList.appendChild(friendDiv);
+            });
         })
     }
 
@@ -187,7 +234,7 @@
         })
         .then(response => {
             if (response.ok) {
-                showToastWithAnimation(); 
+                showToastWithAnimation("Friend request sent!"); 
                 togglePopup(); 
             } else {
             console.error('Error sending friend request');
@@ -198,9 +245,146 @@
         });
     }
 
-    function showToastWithAnimation() {
+    function showFriendRequests() {
+        fetch(`/show-friend-requests?receiver_id=${idUser}`)
+        .then(response => response.json())
+        .then(data => {
+            let requestList = document.getElementById("requestList");
+            requestList.innerHTML = '';
+            data.forEach(request => {
+                let requestDiv = document.createElement('div');
+                requestDiv.classList.add('flex', 'justify-between', 'items-center', 'mb-4');
+                
+                let userNameSpan = document.createElement('span');
+                userNameSpan.textContent = request.Username;
+                userNameSpan.classList.add('text-lg', 'font-bold');
+                
+                let buttonContainer = document.createElement('div'); // Container for buttons
+                buttonContainer.classList.add('flex'); // Make the container a flexbox
+                
+                let acceptButton = document.createElement('button');
+                acceptButton.textContent = 'Accept';
+                acceptButton.classList.add('py-2', 'px-4', 'mr-2', 'bg-green-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-green-700'); // Add margin to the right
+                acceptButton.onclick = function() { acceptFriendRequest(request.id, idUser); }; // Ensure to use correct case for ID
+                
+                let rejectButton = document.createElement('button');
+                rejectButton.textContent = 'Reject';
+                rejectButton.classList.add('py-2', 'px-4', 'bg-red-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-red-700');
+                rejectButton.onclick = function() { rejectFriendRequest(request.id, idUser); }; // Ensure to use correct case for ID
+                
+                buttonContainer.appendChild(acceptButton);
+                buttonContainer.appendChild(rejectButton);
+                
+                requestDiv.appendChild(userNameSpan);
+                requestDiv.appendChild(buttonContainer);
+                
+                requestList.appendChild(requestDiv);
+            });
+        })
+    }
+
+
+
+    function deleteFriend(friendId) {
+        fetch('/remove-friend', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user_id: idUser, friend_id: friendId })
+        })
+        .then(response => {
+            if (response.ok) {
+                showToastWithAnimation("Friend deleted!");
+                showFriends();
+            } else {
+            console.error('Error deleting friend');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the deleteFriend operation:', error);
+        });
+    }
+
+    function rejectFriendRequest(senderId, receiverId){
+        if (!senderId || !receiverId) {
+            console.error('Sender and receiver IDs are required.');
+            return;
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            sender_id: senderId,
+            receiver_id: receiverId
+            })
+        };
+
+        
+        fetch('/reject-friend-request', requestOptions)
+            .then(response => {
+                
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.text();
+            })
+            .then(data => {
+            console.log(data); // Log the success message
+            showToastWithAnimation("Friend request rejected!");
+            showFriendRequests();
+            showFriends();
+            })
+            .catch(error => {
+            console.error('Error rejecting friend request:', error);
+            });
+    }
+
+    function acceptFriendRequest(senderId, receiverId) {
+        if (!senderId || !receiverId) {
+            console.error('Sender and receiver IDs are required.');
+            return;
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            sender_id: senderId,
+            receiver_id: receiverId
+            })
+        };
+
+        
+        fetch('/accept-friend-request', requestOptions)
+            .then(response => {
+                
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.text();
+            })
+            .then(data => {
+            console.log(data); // Log the success message
+            showToastWithAnimation("Friend request accepted!");
+            showFriendRequests();
+            showFriends();
+            })
+            .catch(error => {
+            console.error('Error accepting friend request:', error);
+            });
+    }
+
+
+
+    function showToastWithAnimation(text) {
         const toast = Toastify({
-            text: "Friend request sent!",
+            text: text,
             duration: 3000,
             gravity: "top",
             position: "center",
