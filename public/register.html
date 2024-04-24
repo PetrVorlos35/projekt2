@@ -15,9 +15,23 @@
         </div>
 
         <form class="mt-8 space-y-6" action="/register" method="POST">
+            <!-- <div class="profile-photo-container" style="display: flex; justify-content: center;">
+                <img id="profile_photo_preview" style="display:none;" class="rounded-full mx-auto w-20 h-20 mb-2 object-cover" alt="Profile photo preview" />
+            </div>
+
+            <div>
+                <label for="profile_photo" class="block text-sm font-medium text-gray-300">Profile Picture</label>
+                <input id="profile_photo" name="profile_photo" type="file" class="appearance-none rounded-md relative block w-full px-3 py-2 bg-gray-700 text-gray-300 border border-gray-600 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" accept="image/png, image/jpeg">
+            </div> -->
+
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
                 <input id="username" name="username" type="text" required class="appearance-none rounded-md relative block w-full px-3 py-2 bg-gray-700 text-gray-300 border border-gray-600 placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="username">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                <input id="email" name="email" type="email" required class="appearance-none rounded-md relative block w-full px-3 py-2 bg-gray-700 text-gray-300 border border-gray-600 placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="email">
             </div>
 
             <div>
@@ -42,5 +56,17 @@
             <a href="login.html" class="font-medium text-indigo-400 hover:text-indigo-300">Back to login</a>
         </p>
     </div>
+
+    <script>
+        document.getElementById('profile_photo').addEventListener('change', function(event) {
+            var output = document.getElementById('profile_photo_preview');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function() {
+                URL.revokeObjectURL(output.src); // Free up memory
+            }
+            output.style.display = 'block'; // Make the image visible
+        });
+    </script>
+      
 </body>
 </html>

@@ -33,10 +33,10 @@ const db = mysql.createConnection({
   
   
 app.post('/register', (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
   
-    const sql = 'INSERT INTO Uzivatele (Username, Heslo) VALUES (?, ?)';
-    db.query(sql, [username, password], (err, result) => {
+    const sql = 'INSERT INTO Uzivatele (Username, Heslo, Email) VALUES (?, ?, ?)';
+    db.query(sql, [username, password, email], (err, result) => {
         if (err) throw err;
         console.log('User registered successfully');
         res.redirect('/index.html');
@@ -111,13 +111,13 @@ app.get('/vyhry', (req, res) => {
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
-  const sql = 'SELECT ID, Username FROM Uzivatele WHERE Username = ? AND Heslo = ?';
+  const sql = 'SELECT ID, Username, Email FROM Uzivatele WHERE Username = ? AND Heslo = ?';
   db.query(sql, [username, password], (err, results) => {
       if (err) throw err;
 
       if (results.length > 0) {
           const user = results[0]; 
-          const token = jwt.sign({ id: user.ID, username: user.Username }, jwtSecret, { expiresIn: '1h' });
+          const token = jwt.sign({ id: user.ID, username: user.Username, email: user.Email }, jwtSecret, { expiresIn: '1h' });
       
           res.cookie('token', token, { httpOnly: true, secure: true }); 
           // Redirect with success message as a query parameter
@@ -129,7 +129,15 @@ app.post('/login', (req, res) => {
   });
 });
 
-
+app.get('/friend_info', (req, res) => {
+  const { userId } = req.query;
+  const sql = 'SELECT Username, Email FROM Uzivatele WHERE ID = ?';
+  db.query(sql, [userId], (err, result) => {
+    if (err) res.send(err + 'Error fetching friend info');
+    else res.json(result[0]);
+  }
+  );
+});
 
 app.get('/get-user-info', (req, res) => {
   const token = req.cookies.token; // Access the token from the HTTP-only cookie
@@ -143,7 +151,7 @@ app.get('/get-user-info', (req, res) => {
       }
 
       // Send back user information, including the ID
-      res.json({ id: decoded.id, username: decoded.username });
+      res.json({ id: decoded.id, username: decoded.username , email: decoded.email});
   });
 });
 

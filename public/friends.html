@@ -158,7 +158,7 @@
             
             let addButton = document.createElement('button');
             addButton.textContent = 'Add Friend';
-            addButton.classList.add('py-2', 'px-4', 'bg-blue-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-blue-700');
+            addButton.classList.add('py-2', 'px-4', 'bg-blue-700', 'text-white', 'rounded', 'hover:bg-blue-800');
             addButton.onclick = function() { sendFriendRequest(user.ID); };
             
             userDiv.appendChild(userNameSpan);
@@ -201,28 +201,47 @@
         .then(data => {
             let friendList = document.getElementById("friendList");
             friendList.innerHTML = '';
-            data.forEach(friend => {
+            data.forEach((friend, index) => {
                 let friendDiv = document.createElement('div');
-                friendDiv.classList.add('flex', 'justify-between', 'items-center', 'mb-4');
-                
+                friendDiv.classList.add('flex', 'items-center', 'mb-4'); // Základní třídy
+
+                if (index > 0) { // Pro všechny kromě prvního prvku, přidáme horní okraj
+                    friendDiv.classList.add('border-t', 'pt-4'); // Horní okraj a padding
+                    friendDiv.style.borderColor = 'rgba(0,0,0,0.5)'; // Nastavení barvy okraje
+                }
+
                 let userNameSpan = document.createElement('span');
                 userNameSpan.textContent = friend.Username;
-                userNameSpan.classList.add('text-lg', 'font-bold');
+                userNameSpan.classList.add('text-lg', 'font-bold', 'flex-grow');
+
+                let buttonsDiv = document.createElement('div');
+
+                let viewProfileButton = document.createElement('button');
+                viewProfileButton.textContent = 'View Profile';
+                viewProfileButton.classList.add('py-2', 'px-4', 'bg-blue-700', 'text-white', 'rounded', 'hover:bg-blue-800');
+                viewProfileButton.onclick = function() { viewProfile(friend.id); };
 
                 let deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
-                deleteButton.classList.add('py-2', 'px-4', 'bg-red-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-red-700');
-                deleteButton.onclick = function() { deleteFriend(friend.id); }; // Ensure to use correct case for ID
+                deleteButton.classList.add('py-2', 'px-4', 'bg-red-700', 'text-white', 'rounded', 'hover:bg-red-800', 'ml-2');
+                deleteButton.onclick = function() { deleteFriend(friend.id); };
 
+                buttonsDiv.appendChild(viewProfileButton);
+                buttonsDiv.appendChild(deleteButton);
                 
                 friendDiv.appendChild(userNameSpan);
-                
-                friendDiv.appendChild(deleteButton);
+                friendDiv.appendChild(buttonsDiv);
 
                 friendList.appendChild(friendDiv);
             });
         })
     }
+
+
+    function viewProfile(friendId) {
+        window.location.href = `/friends_profile.html?user_id=${friendId}`;
+    }
+
 
     function sendFriendRequest(targetUserId) {
         fetch('/send-friend-request', {
@@ -246,42 +265,47 @@
     }
 
     function showFriendRequests() {
-        fetch(`/show-friend-requests?receiver_id=${idUser}`)
-        .then(response => response.json())
-        .then(data => {
-            let requestList = document.getElementById("requestList");
-            requestList.innerHTML = '';
-            data.forEach(request => {
-                let requestDiv = document.createElement('div');
-                requestDiv.classList.add('flex', 'justify-between', 'items-center', 'mb-4');
-                
-                let userNameSpan = document.createElement('span');
-                userNameSpan.textContent = request.Username;
-                userNameSpan.classList.add('text-lg', 'font-bold');
-                
-                let buttonContainer = document.createElement('div'); // Container for buttons
-                buttonContainer.classList.add('flex'); // Make the container a flexbox
-                
-                let acceptButton = document.createElement('button');
-                acceptButton.textContent = 'Accept';
-                acceptButton.classList.add('py-2', 'px-4', 'mr-2', 'bg-green-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-green-700'); // Add margin to the right
-                acceptButton.onclick = function() { acceptFriendRequest(request.id, idUser); }; // Ensure to use correct case for ID
-                
-                let rejectButton = document.createElement('button');
-                rejectButton.textContent = 'Reject';
-                rejectButton.classList.add('py-2', 'px-4', 'bg-red-500', 'text-white', 'font-bold', 'rounded', 'hover:bg-red-700');
-                rejectButton.onclick = function() { rejectFriendRequest(request.id, idUser); }; // Ensure to use correct case for ID
-                
-                buttonContainer.appendChild(acceptButton);
-                buttonContainer.appendChild(rejectButton);
-                
-                requestDiv.appendChild(userNameSpan);
-                requestDiv.appendChild(buttonContainer);
-                
-                requestList.appendChild(requestDiv);
-            });
-        })
-    }
+    fetch(`/show-friend-requests?receiver_id=${idUser}`)
+    .then(response => response.json())
+    .then(data => {
+        let requestList = document.getElementById("requestList");
+        requestList.innerHTML = '';
+        data.forEach((request, index) => {
+            let requestDiv = document.createElement('div');
+            requestDiv.classList.add('flex', 'items-center', 'mb-4');
+            if (index > 0) { 
+                requestDiv.style.borderTop = '1px solid rgba(0,0,0,0.5)';
+                requestDiv.style.paddingTop = '16px'; 
+            }
+            
+            let userNameSpan = document.createElement('span');
+            userNameSpan.textContent = request.Username;
+            userNameSpan.classList.add('text-lg', 'font-bold', 'flex-grow');
+            
+            let buttonContainer = document.createElement('div'); 
+            buttonContainer.classList.add('flex');
+            
+            let acceptButton = document.createElement('button');
+            acceptButton.textContent = 'Accept';
+            acceptButton.classList.add('py-2', 'px-4', 'mr-2', 'bg-green-700', 'text-white', 'rounded', 'hover:bg-green-800');
+            acceptButton.onclick = function() { acceptFriendRequest(request.id, idUser); };
+            
+            let rejectButton = document.createElement('button');
+            rejectButton.textContent = 'Reject';
+            rejectButton.classList.add('py-2', 'px-4', 'bg-red-700', 'text-white', 'rounded', 'hover:bg-red-800');
+            rejectButton.onclick = function() { rejectFriendRequest(request.id, idUser); };
+            
+            buttonContainer.appendChild(acceptButton);
+            buttonContainer.appendChild(rejectButton);
+            
+            requestDiv.appendChild(userNameSpan);
+            requestDiv.appendChild(buttonContainer);
+            
+            requestList.appendChild(requestDiv);
+        });
+    })
+}
+
 
 
 

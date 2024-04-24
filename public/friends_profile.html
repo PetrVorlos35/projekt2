@@ -80,19 +80,18 @@
 
     <div class="flex-1 p-8">
       <div class="mb-4">
-        <a href="index.html" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+        <a href="friends.html" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
           <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Game
+          Back to Friends
         </a>
       </div>
 
       <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
         <h2 class="text-2xl font-bold mb-4 ">Personal Information</h2>
         <div class="profile-photo-container flex flex-col items-center justify-center">
-          <input type="file" id="profile_photo" name="profile_photo" class="hidden" accept="image/png, image/jpeg" onchange="loadFile(event)">
-          <label for="profile_photo" class="w-20 h-20 border-2 border-transparent rounded-full cursor-pointer overflow-hidden bg-gray-700 flex justify-center items-center">
+          <label for="profile_photo" class="w-20 h-20 border-2 border-transparent rounded-full overflow-hidden bg-gray-700 flex justify-center items-center">
               <img id="profile_photo_preview"  alt="User Avatar" class="object-cover rounded-full w-full h-full">
           </label>
       </div>
@@ -138,19 +137,6 @@
   </div>
 
 </div>
-
-<script>
-  document.getElementById('profile_photo').addEventListener('change', function(event) {
-      var input = event.target;
-      var reader = new FileReader();
-      reader.onload = function(){
-          var dataURL = reader.result;
-          var output = document.getElementById('profile_photo_preview');
-          output.src = dataURL;
-      };
-      reader.readAsDataURL(input.files[0]);
-  });
-</script>
 
 <script>
 
@@ -205,7 +191,7 @@ window.addEventListener('resize', resizeCanvas);
           color: 'white',
           anchor: 'end',
           align: 'right',
-          offset: 0, 
+          offset: 0,
         }
       }
     },
@@ -241,24 +227,33 @@ window.addEventListener('resize', resizeCanvas);
         throw new Error('Network response was not ok.');
     })
     .then(data => {
-        console.log('User Info:', data);
+        const url = window.location.href;
 
-        const elements = document.querySelectorAll('.user-name');
-        let idUser = data.id;
+        const urlParams = new URLSearchParams(new URL(url).search);
 
-        const email = data.email;
-        const emailElements = document.querySelectorAll('.email');
+        const friendId = urlParams.get('user_id');
 
-        emailElements.forEach(element => {
-            element.textContent = email;
+        fetch(`/friend_info?userId=${friendId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('User Info:', data);
+
+            const elements = document.querySelectorAll('.user-name');
+
+            const email = data.Email;
+            const emailElements = document.querySelectorAll('.email');
+
+            emailElements.forEach(element => {
+                element.textContent = email;
+            });
+
+            elements.forEach(element => {
+                element.textContent = data.Username;
+            });
+            
         });
 
-
-        elements.forEach(element => {
-            element.textContent = data.username;
-        });
-
-        fetch(`http://localhost:3000/statistiky?userId=${idUser}`)
+        fetch(`http://localhost:3000/statistiky?userId=${friendId}`)
         .then(response => response.json())
         .then(data => {
           
@@ -269,7 +264,7 @@ window.addEventListener('resize', resizeCanvas);
         })
         .catch(error => console.error('Error:', error));
 
-        fetch(`http://localhost:3000/vyhry?userId=${idUser}`)
+        fetch(`http://localhost:3000/vyhry?userId=${friendId}`)
     .then(response => response.json())
     .then(data => {
       let chartData = Array(8).fill(0); 
