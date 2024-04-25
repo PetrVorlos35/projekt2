@@ -74,11 +74,19 @@
             </a>
         </div>
         <div class="bg-gray-800 p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold mb-4">Your Friends</h2>
+            <div id="searchContainer" class="flex justify-between ">
+                <h2 class="text-2xl font-bold mb-4">Your Friends</h2>
+                <input type="text" id="searchBar" placeholder="Search friends..." class="full bg-gray-900 text-white px-4 py-2 rounded-md mb-4" onkeyup="showFriends()">
+            </div>
             <div class="space-y-4" id="friendList">
               <!-- Dynamically list friends here -->
             </div>
-            <h2 class="text-2xl font-bold mt-8 mb-4">Friend Requests</h2>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-4">
+            <div id="searchRequestsContainer" class="flex justify-between">
+                <h2 class="text-2xl font-bold mb-4">Friend Requests</h2>
+                <input type="text" id="searchRequestsBar" placeholder="Search friend requests..." class="full bg-gray-900 text-white px-4 py-2 rounded-md mb-4" onkeyup="showFriendRequests()">
+            </div>
             <div class="space-y-4" id="requestList">
               <!-- Friend requests will be displayed here -->
             </div>
@@ -94,7 +102,7 @@
 
 </div>
 
-<div id="popup" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
+<div id="popup" class="fixed inset-0 bg-gray-600 bg-opacity-50 justify-center items-center hidden">
     <div class="bg-gray-900 w-1/2 max-w-2xl h-96 rounded-lg p-8 relative text-center">
       <button onclick="togglePopup()" class="absolute top-0 right-0 mt-2 mr-2 text-white text-2xl font-bold">&times;</button>
       <h2 class="text-xl text-white mb-4">Send Friend Requests</h2>
@@ -196,12 +204,14 @@
     }
 
     function showFriends(){
-        fetch(`/show-friends?user_id=${idUser}`)
-        .then(response => response.json())
-        .then(data => {
-            let friendList = document.getElementById("friendList");
-            friendList.innerHTML = '';
-            data.forEach((friend, index) => {
+    const searchInput = document.getElementById('searchBar').value.toLowerCase();
+    fetch(`/show-friends?user_id=${idUser}`)
+    .then(response => response.json())
+    .then(data => {
+        let friendList = document.getElementById("friendList");
+        friendList.innerHTML = '';
+        data.filter(friend => friend.Username.toLowerCase().includes(searchInput))
+            .forEach((friend, index) => {
                 let friendDiv = document.createElement('div');
                 friendDiv.classList.add('flex', 'items-center', 'mb-4'); // Základní třídy
 
@@ -234,8 +244,9 @@
 
                 friendList.appendChild(friendDiv);
             });
-        })
-    }
+    })
+}
+
 
 
     function viewProfile(friendId) {
@@ -265,46 +276,49 @@
     }
 
     function showFriendRequests() {
-    fetch(`/show-friend-requests?receiver_id=${idUser}`)
-    .then(response => response.json())
-    .then(data => {
-        let requestList = document.getElementById("requestList");
-        requestList.innerHTML = '';
-        data.forEach((request, index) => {
-            let requestDiv = document.createElement('div');
-            requestDiv.classList.add('flex', 'items-center', 'mb-4');
-            if (index > 0) { 
-                requestDiv.style.borderTop = '1px solid rgba(0,0,0,0.5)';
-                requestDiv.style.paddingTop = '16px'; 
-            }
-            
-            let userNameSpan = document.createElement('span');
-            userNameSpan.textContent = request.Username;
-            userNameSpan.classList.add('text-lg', 'font-bold', 'flex-grow');
-            
-            let buttonContainer = document.createElement('div'); 
-            buttonContainer.classList.add('flex');
-            
-            let acceptButton = document.createElement('button');
-            acceptButton.textContent = 'Accept';
-            acceptButton.classList.add('py-2', 'px-4', 'mr-2', 'bg-green-700', 'text-white', 'rounded', 'hover:bg-green-800');
-            acceptButton.onclick = function() { acceptFriendRequest(request.id, idUser); };
-            
-            let rejectButton = document.createElement('button');
-            rejectButton.textContent = 'Reject';
-            rejectButton.classList.add('py-2', 'px-4', 'bg-red-700', 'text-white', 'rounded', 'hover:bg-red-800');
-            rejectButton.onclick = function() { rejectFriendRequest(request.id, idUser); };
-            
-            buttonContainer.appendChild(acceptButton);
-            buttonContainer.appendChild(rejectButton);
-            
-            requestDiv.appendChild(userNameSpan);
-            requestDiv.appendChild(buttonContainer);
-            
-            requestList.appendChild(requestDiv);
-        });
-    })
-}
+        const searchInput = document.getElementById('searchRequestsBar').value.toLowerCase();
+        fetch(`/show-friend-requests?receiver_id=${idUser}`)
+        .then(response => response.json())
+        .then(data => {
+            let requestList = document.getElementById("requestList");
+            requestList.innerHTML = '';
+            data.filter(request => request.Username.toLowerCase().includes(searchInput))
+                .forEach((request, index) => {
+                    let requestDiv = document.createElement('div');
+                    requestDiv.classList.add('flex', 'items-center', 'mb-4');
+                    if (index > 0) { 
+                        requestDiv.style.borderTop = '1px solid rgba(0,0,0,0.5)';
+                        requestDiv.style.paddingTop = '16px'; 
+                    }
+                    
+                    let userNameSpan = document.createElement('span');
+                    userNameSpan.textContent = request.Username;
+                    userNameSpan.classList.add('text-lg', 'font-bold', 'flex-grow');
+                    
+                    let buttonContainer = document.createElement('div'); 
+                    buttonContainer.classList.add('flex');
+                    
+                    let acceptButton = document.createElement('button');
+                    acceptButton.textContent = 'Accept';
+                    acceptButton.classList.add('py-2', 'px-4', 'mr-2', 'bg-green-700', 'text-white', 'rounded', 'hover:bg-green-800');
+                    acceptButton.onclick = function() { acceptFriendRequest(request.id, idUser); };
+                    
+                    let rejectButton = document.createElement('button');
+                    rejectButton.textContent = 'Reject';
+                    rejectButton.classList.add('py-2', 'px-4', 'bg-red-700', 'text-white', 'rounded', 'hover:bg-red-800');
+                    rejectButton.onclick = function() { rejectFriendRequest(request.id, idUser); };
+                    
+                    buttonContainer.appendChild(acceptButton);
+                    buttonContainer.appendChild(rejectButton);
+                    
+                    requestDiv.appendChild(userNameSpan);
+                    requestDiv.appendChild(buttonContainer);
+                    
+                    requestList.appendChild(requestDiv);
+                });
+        })
+    }
+
 
 
 
