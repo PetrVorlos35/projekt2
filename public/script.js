@@ -260,7 +260,6 @@ function togglePopup() {
   position.innerHTML = rndPosition;
   height.innerHTML = convertion[0] + " ft" + " " + convertion[1] + " in";
   No.innerHTML = randomPlayerNo;
-
 }
 
 function saveStats(userId, attempts, winLoss) {
