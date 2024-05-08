@@ -190,12 +190,13 @@
 
 
     function fetchUsers() {
-        fetch('/users')
+        fetch(`/users?user_id=${idUser}`)
         .then(response => response.json())
         .then(data => {
             users = data;
             displayUsers();
         })
+        .catch(error => console.error('Error fetching users:', error));
     }
 
     function showFriends(){

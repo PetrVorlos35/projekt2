@@ -215,12 +215,31 @@ app.get('/random', (req, res) => {
     res.json(randomPlayer);
   });
 
+  // app.get('/users', (req, res) => {
+  //   db.query('SELECT * FROM Uzivatele', (err, results) => {
+  //     if (err) throw err;
+  //     res.json(results);
+  //   });
+  // });
+
   app.get('/users', (req, res) => {
-    db.query('SELECT * FROM Uzivatele', (err, results) => {
-      if (err) throw err;
-      res.json(results);
+    const userId = req.query.user_id;  // Získání userId z query parametrů
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+    const query = `
+        SELECT * FROM Uzivatele WHERE ID NOT IN (
+            SELECT receiver_id FROM friend_requests WHERE sender_id = ? AND status IN ('pending', 'accepted')
+            UNION
+            SELECT sender_id FROM friend_requests WHERE receiver_id = ? AND status IN ('pending', 'accepted')
+        )
+    `;
+    db.query(query, [userId, userId], (err, results) => {
+        if (err) throw err;
+        res.json(results);
     });
-  });
+});
+
 
 app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
 
