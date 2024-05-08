@@ -214,14 +214,7 @@ app.get('/random', (req, res) => {
     console.log('Randomly selected player:', randomPlayer);
     res.json(randomPlayer);
   });
-
-  // app.get('/users', (req, res) => {
-  //   db.query('SELECT * FROM Uzivatele', (err, results) => {
-  //     if (err) throw err;
-  //     res.json(results);
-  //   });
-  // });
-
+  
   app.get('/users', (req, res) => {
     const userId = req.query.user_id;  // Získání userId z query parametrů
     if (!userId) {
