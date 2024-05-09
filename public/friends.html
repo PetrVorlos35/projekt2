@@ -209,12 +209,31 @@
         data.filter(friend => friend.Username.toLowerCase().includes(searchInput))
             .forEach((friend, index) => {
                 let friendDiv = document.createElement('div');
-                friendDiv.classList.add('flex', 'items-center', 'mb-4'); // Základní třídy
+                friendDiv.classList.add('flex', 'items-center', 'mb-4'); // Basic classes
 
-                if (index > 0) { // Pro všechny kromě prvního prvku, přidáme horní okraj
-                    friendDiv.classList.add('border-t', 'pt-4'); // Horní okraj a padding
-                    friendDiv.style.borderColor = 'rgba(0,0,0,0.5)'; // Nastavení barvy okraje
+                if (index > 0) { // For all but the first item, add a top margin
+                    friendDiv.classList.add('border-t', 'pt-4'); // Top margin and padding
+                    friendDiv.style.borderColor = 'rgba(0,0,0,0.5)'; // Border color setting
                 }
+
+                let profilePhoto = document.createElement('img');
+                profilePhoto.classList.add('w-10', 'h-10', 'rounded-full', 'mr-4');
+                profilePhoto.alt = "Profile Photo";
+
+                fetch(`/profile-picture?userId=${friend.id}`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.blob();
+                        }
+                        throw new Error('Failed to load profile picture');
+                    })
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        profilePhoto.src = url;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
 
                 let userNameSpan = document.createElement('span');
                 userNameSpan.textContent = friend.Username;
@@ -234,7 +253,8 @@
 
                 buttonsDiv.appendChild(viewProfileButton);
                 buttonsDiv.appendChild(deleteButton);
-                
+
+                friendDiv.appendChild(profilePhoto);
                 friendDiv.appendChild(userNameSpan);
                 friendDiv.appendChild(buttonsDiv);
 
@@ -242,6 +262,7 @@
             });
     })
 }
+
 
 
 
