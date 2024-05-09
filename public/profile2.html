@@ -75,12 +75,6 @@
               <path d="M9.61182 14.2936L11.5161 13.4636L20.6372 4.35224L19.2993 3.03388L10.188 12.1452L9.30908 13.9811C9.23096 14.1472 9.42627 14.3718 9.61182 14.2936ZM21.3599 3.63935L22.063 2.91669C22.395 2.56513 22.395 2.09638 22.063 1.77412L21.8384 1.53974C21.5356 1.23701 21.0571 1.27607 20.7349 1.58857L20.022 2.29169Z" fill="currentColor" fill-opacity="0.85"/> 
               </g>
             </svg>
-            <!-- <svg class="hidden" id="closeBtn" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="23.6475" height="23.3041">
-              <g> 
-              <rect height="23.3041" opacity="0" width="23.6475" x="0" y="0"/> 
-              <path d="M0.252699 15.2429C0.594496 15.575 1.1609 15.575 1.49293 15.2429L7.74293 8.99293L13.9929 15.2429C14.325 15.575 14.9011 15.5847 15.2332 15.2429C15.5652 14.9011 15.5652 14.3445 15.2332 14.0125L8.98317 7.7527L15.2332 1.5027C15.5652 1.17067 15.575 0.604261 15.2332 0.27223C14.8914-0.0695668 14.325-0.0695668 13.9929 0.27223L7.74293 6.52223L1.49293 0.27223C1.1609-0.0695668 0.58473-0.0793324 0.252699 0.27223C-0.0793324 0.614027-0.0793324 1.17067 0.252699 1.5027L6.5027 7.7527L0.252699 14.0125C-0.0793324 14.3445-0.0890981 14.9109 0.252699 15.2429Z" fill="currentColor" fill-opacity="0.85"/> 
-              </g> 
-            </svg>  -->
             <svg class="hidden" id="closeBtn"  version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="23.6475" height="23.3041"> 
               <g> 
               <rect height="25.3418" opacity="0" width="17.6953" x="0" y="0"/> 
@@ -88,7 +82,6 @@
               </g> 
             </svg>
           </button>
-          <!-- <h1></h1> -->
         </div>
         <div class="profile-photo-container flex flex-col items-center justify-center">
           <input disabled type="file" id="profile_photo" name="profile_photo" class="hidden" accept="image/png, image/jpeg" onchange="loadFile(event)">
@@ -176,6 +169,8 @@ function editProfilePic(){
   changePic.classList.toggle('border-transparent');
 }
 
+
+
 resizeCanvas();
 
 
@@ -239,7 +234,7 @@ window.addEventListener('resize', resizeCanvas);
 </script>
 <script>
 
-
+let idUser;
 
   fetch('/get-user-info')
     .then(response => {
@@ -258,7 +253,7 @@ window.addEventListener('resize', resizeCanvas);
         console.log('User Info:', data);
 
         const elements = document.querySelectorAll('.user-name');
-        let idUser = data.id;
+        idUser = data.id;
 
         const email = data.email;
         const emailElements = document.querySelectorAll('.email');
@@ -305,6 +300,24 @@ window.addEventListener('resize', resizeCanvas);
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
     });
+
+    function loadFile(event) {
+      var file = event.target.files[0]; // Get the file
+      var formData = new FormData();
+      formData.append('profilePhoto', file);
+
+      fetch(`/upload-profile-picture?userId=${idUser}`, { // Endpoint to handle the upload
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Success:', data);
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+      });
+  }
 </script>
 </body>
 </html>

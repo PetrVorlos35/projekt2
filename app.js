@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const multer = require('multer');
+const path = require('path');
 const jwtSecret = 'tajnyHeslo'; 
 
 
@@ -57,6 +59,38 @@ app.post('/register', (req, res) => {
       // res.redirect('/index.html');
     });
   });
+
+  // Configure storage for Multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'uploads/'); // Ensure this directory exists
+  },
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Endpoint to upload profile picture
+app.post('/upload-profile-picture', upload.single('profilePhoto'), (req, res) => {
+  const file = req.file;
+  if (!file) {
+      return res.status(400).send('No file uploaded.');
+  }
+  const imagePath = `/uploads/${file.filename}`; // URL or path for the uploaded file
+
+  // Update user's profile in the database
+  const userId = req.query.userId; 
+  const sql = 'UPDATE Uzivatele SET ProfilePicture = ? WHERE ID = ?';
+  db.query(sql, [imagePath, userId], (err, result) => {
+      if (err) {
+          console.error('Database update failed', err);
+          return res.status(500).send('Failed to update user profile.');
+      }
+      res.send('Profile updated successfully!');
+  });
+});
 
 
 app.get('/statistiky', (req, res) => {
@@ -214,7 +248,7 @@ app.get('/random', (req, res) => {
     console.log('Randomly selected player:', randomPlayer);
     res.json(randomPlayer);
   });
-  
+
   app.get('/users', (req, res) => {
     const userId = req.query.user_id;  // Získání userId z query parametrů
     if (!userId) {
