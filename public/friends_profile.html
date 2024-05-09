@@ -223,6 +223,22 @@ window.addEventListener('resize', resizeCanvas);
             
         });
 
+        fetch(`/profile-picture?userId=${friendId}`)
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const profilePhoto = document.getElementById('profile_photo_preview');
+            profilePhoto.src = url;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
         fetch(`http://localhost:3000/statistiky?userId=${friendId}`)
         .then(response => response.json())
         .then(data => {

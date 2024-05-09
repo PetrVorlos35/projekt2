@@ -133,7 +133,7 @@ function chechWin(playerName, row, player, playerData) {
       guessBtn.hidden = true;
       popupBtn.hidden = false;
       userinput.disabled = true;
-      userinput.placeholder = `Vyhrál jsi!! Počet pokusů: ${guesses}`;
+      userinput.placeholder = `You won!! Guesses: ${guesses}`;
       wonOrLost = 1;
       saveStats(idUser, guesses, 1);
       return true;
@@ -218,7 +218,7 @@ function chechWin(playerName, row, player, playerData) {
 }
 
 function lost(row) {
-  userinput.placeholder = `Prohrál jsi!`;
+  userinput.placeholder = `You lost!`;
   guessBtn.disabled = true;
   guessBtn.hidden = true;
   popupBtn.hidden = false;
@@ -253,7 +253,7 @@ function togglePopup() {
 
   
   winPlayer.innerHTML = randomPlayerName;
-  winLossText.innerHTML = wonOrLost === 1 ? 'Vyhrál jsi!' : 'Prohrál jsi!';
+  winLossText.innerHTML = wonOrLost === 1 ? 'You won!' : 'You lost!';
   teamName.innerHTML = rndTeam;
   division.innerHTML = rndDivision;
   conference.innerHTML = rndConf;
