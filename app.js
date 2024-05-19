@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const path = require('path');
 const jwtSecret = 'tajnyHeslo'; 
+require('dotenv').config();
 
 
 const app = express();
@@ -33,6 +34,11 @@ const db = mysql.createConnection({
   
   app.use(bodyParser.urlencoded({ extended: true }));
   
+
+app.get('/api-key', (req, res) => {
+  res.json({ apiKey: process.env.API_KEY });
+});
+
   
 app.post('/register', (req, res) => {
     const { username, password, email } = req.body;

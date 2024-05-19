@@ -42,6 +42,15 @@ function getRandomPlayer() {
 getRandomPlayer();
 });
 
+async function getApiKey() {
+  try {
+    const response = await fetch('http://localhost:3000/api-key');
+    const data = await response.json();
+    return data.apiKey;
+  } catch (error) {
+    console.error('Error fetching API key:', error);
+  }
+}
 
 async function randomPlayerStats(playerName) {
 
@@ -50,9 +59,10 @@ async function randomPlayerStats(playerName) {
     let playerLastName = nameSplit[1];
 
     const apiUrl = `https://api.balldontlie.io/v1/players?first_name=${playerFirstName}&last_name=${playerLastName}&per_page=1`;
-  const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
+  // const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
 
   try {
+    const apiKey = await getApiKey();
     const response = await axios.get(apiUrl, {
       headers: {
         'Authorization': ` ${apiKey}`
@@ -277,7 +287,8 @@ function saveStats(userId, attempts, winLoss) {
 
 
   async function fetchSinglePlayer(playerName) {
-    const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
+    // const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
+    const apiKey = await getApiKey();
     const headers = {
         'Authorization': ` ${apiKey}`
     };
