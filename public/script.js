@@ -59,7 +59,6 @@ async function randomPlayerStats(playerName) {
     let playerLastName = nameSplit[1];
 
     const apiUrl = `https://api.balldontlie.io/v1/players?first_name=${playerFirstName}&last_name=${playerLastName}&per_page=1`;
-  // const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
 
   try {
     const apiKey = await getApiKey();
@@ -287,7 +286,6 @@ function saveStats(userId, attempts, winLoss) {
 
 
   async function fetchSinglePlayer(playerName) {
-    // const apiKey = '74bd042f-d131-41bb-9d2e-5d28edbd65c5'; 
     const apiKey = await getApiKey();
     const headers = {
         'Authorization': ` ${apiKey}`
