@@ -188,31 +188,55 @@
 
 <script>
 
-
-
 let idUser;
 
-fetch('/get-user-info')
-.then(response => {
-    if (response.ok) {
-        return response.json();
-    }
+function initialLoad() {
+    fetch('/get-user-info')
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
 
-    if(response.status === 401 || response.status === 403) {
-        console.log("není uživatel");
-        window.location.href = '/login.html';
-    }
-    throw new Error('Network response was not ok.');
-})
-.then(data => {
-    console.log('User Info:', data);
-    idUser = data.id;
+        if (response.status === 401 || response.status === 403) {
+            console.log("není uživatel");
+            window.location.href = '/login.html';
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(data => {
+        console.log('User Info:', data);
+        idUser = data.id;
 
-    document.getElementById('user-info').textContent = `${data.username}`;
-})
-.catch(error => {
-    console.error('There has been a problem with your fetch operation:', error);
-});
+        document.getElementById('user-info').textContent = `${data.username}`;
+
+        setInterval(checkUser, 300000);
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+}
+
+function checkUser() {
+    fetch('/get-user-info')
+    .then(response => {
+        if (response.ok) {
+            return;
+        }
+
+        if (response.status === 401 || response.status === 403) {
+            console.log("není uživatel");
+            window.location.href = '/login.html';
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+}
+
+initialLoad();
+
+
 </script>
 </div>
 </body>

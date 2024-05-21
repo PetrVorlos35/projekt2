@@ -14,7 +14,7 @@ document.getElementById('searchBar').addEventListener('input', async function() 
               const suggestionsList = document.getElementById('suggestions');
               suggestionsList.innerHTML = players.map(player => `<li tabindex="0">${player.first_name} ${player.last_name}</li>`).join('');
 
-              let currentFocus = -1; // No item is focused initially
+              let currentFocus = -1; 
 
               suggestionsList.addEventListener('keydown', function(e) {
                   if (e.key === "ArrowDown") {
@@ -24,7 +24,7 @@ document.getElementById('searchBar').addEventListener('input', async function() 
                       currentFocus--;
                       addActive(suggestionsList.querySelectorAll('li'));
                   } else if (e.key === "Enter") {
-                      e.preventDefault(); // Prevent form submission
+                      e.preventDefault(); 
                       if (currentFocus > -1) {
                           suggestionsList.querySelectorAll('li')[currentFocus].click();
                       }
@@ -69,29 +69,25 @@ document.addEventListener('DOMContentLoaded', function() {
           'Authorization': `${apiKey}`
       };
 
-      // Fetch the total count of active players
       const countUrl = 'https://api.balldontlie.io/v1/players/active?per_page=1';
       try {
           const countResponse = await axios.get(countUrl, { headers });
           if (countResponse.status === 200) {
               const totalPlayers = countResponse.data.meta.total_count;
-              const totalPages = Math.ceil(totalPlayers / 25); // Calculate total pages
-              const randomPage = Math.floor(Math.random() * totalPages) + 1; // Get a random page
+              const totalPages = Math.ceil(totalPlayers / 25); 
+              const randomPage = Math.floor(Math.random() * totalPages) + 1; 
 
-              // Fetch a random player from the selected page
               const apiUrl = `https://api.balldontlie.io/v1/players/active?per_page=25&page=${randomPage}`;
               const response = await axios.get(apiUrl, { headers });
               if (response.status === 200 && response.data.data.length > 0) {
                   const randomIndex = Math.floor(Math.random() * response.data.data.length);
                   const randomPlayer = response.data.data[randomIndex];
 
-                  // Save random player details to global variables
                   randomPlayerName = `${randomPlayer.first_name} ${randomPlayer.last_name}`;
                   randomPlayerNo = randomPlayer.jersey_number || "N/A";
                   randomPlayerHeight = randomPlayer.height || "N/A";
-                  rndStats = await randomPlayerStats(randomPlayerName); // Assuming this function fetches additional stats
+                  rndStats = await randomPlayerStats(randomPlayerName); 
 
-                  // Log the selected player
                   console.log(`Randomly selected player: ${randomPlayerName}, Number: ${randomPlayerNo}, Height: ${randomPlayerHeight}`);
               } else {
                   console.log('No players found on this page.');
@@ -138,6 +134,7 @@ async function randomPlayerStats(playerName) {
           rndDivision = player.team.division;
           rndConf = player.team.conference;
           rndTeam = player.team.full_name;
+          abbreviation = player.team.abbreviation;
           return {
               player: player,
               position: player.position,
@@ -163,6 +160,7 @@ let rndPosition;
 let rndDivision;
 let rndConf;
 let rndTeam;
+let abbreviation;
 var rndStats;
 
 let guesses = 1;
@@ -314,7 +312,7 @@ function togglePopup() {
 
   winPlayer.innerHTML = randomPlayerName;
   winLossText.innerHTML = wonOrLost === 1 ? 'You won!' : 'You lost!';
-  teamName.innerHTML = rndTeam;
+  teamName.innerHTML = abbreviation;
   division.innerHTML = rndDivision;
   conference.innerHTML = rndConf;
   position.innerHTML = rndPosition;

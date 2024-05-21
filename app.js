@@ -1,12 +1,10 @@
 const express = require('express');
-const xlsx = require('xlsx');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const path = require('path');
 const jwtSecret = 'tajnyHeslo'; 
 require('dotenv').config();
 
@@ -52,32 +50,26 @@ app.post('/register', (req, res) => {
   });
 
   app.get('/saveStats', (req, res) => {
-    // Přečtení parametrů z query stringu
     const { userId, attempts, winLoss } = req.query;
   
-    // Zde byste umístili logiku pro zpracování a ukládání dat do databáze
     console.log(`Ukládám statistiky pro uživatele ${userId}: pokusy = ${attempts}, výsledek = ${winLoss}`);
 
     const sql = 'CALL InsertStatistiky2(?, ?, ?)';
     db.query(sql, [userId, attempts, winLoss], (err, result) => {
       if (err) throw err;
       console.log('Stats saved successfully');
-      // res.redirect('/index.html');
     });
   });
 
-  // Configure storage for Multer
   const storage = multer.memoryStorage();
   const upload = multer({ storage: storage });
 
-// Endpoint to upload profile picture
 app.post('/upload-profile-picture', upload.single('profilePhoto'), (req, res) => {
   const file = req.file;
   if (!file) {
       return res.status(400).send('No file uploaded.');
   }
 
-  // Update user's profile in the database
   const userId = req.query.userId; 
   const sql = 'UPDATE Uzivatele SET ProfilePicture = ? WHERE ID = ?';
   db.query(sql, [file.buffer, userId], (err, result) => {
@@ -110,7 +102,6 @@ app.get('/profile-picture', (req, res) => {
 
 app.get('/statistiky', (req, res) => {
   const { userId } = req.query; 
-  // console.log('Získávám statistiky pro uživatele s ID:', userId);
   const sql = `
     SELECT 
       UzivateleID,
@@ -131,7 +122,6 @@ app.get('/statistiky', (req, res) => {
 
 app.get('/vyhry', (req, res) => {
   const { userId } = req.query;
-  // console.log('Získávám guess distribution pro uživatele s ID:', userId);
 
 
   const sql = `
@@ -169,7 +159,6 @@ app.post('/login', (req, res) => {
           const token = jwt.sign({ id: user.ID, username: user.Username, email: user.Email }, jwtSecret, { expiresIn: '1h' });
       
           res.cookie('token', token, { httpOnly: true, secure: true }); 
-          // Redirect with success message as a query parameter
           res.redirect('/index.html?success=1');
       } else {
           console.log('Incorrect Username and/or Password!');
@@ -189,7 +178,7 @@ app.get('/friend_info', (req, res) => {
 });
 
 app.get('/get-user-info', (req, res) => {
-  const token = req.cookies.token; // Access the token from the HTTP-only cookie
+  const token = req.cookies.token; 
   if (!token) {
       return res.status(401).send('No token provided');
   }
@@ -199,29 +188,26 @@ app.get('/get-user-info', (req, res) => {
           return res.status(500).send('Failed to authenticate token.');
       }
 
-      // Send back user information, including the ID
       res.json({ id: decoded.id, username: decoded.username , email: decoded.email});
   });
 });
 
 
 app.get('/logout', (req, res) => {
-  // Clear the cookie named 'token'
   res.clearCookie('token');
   
-  // Optionally, redirect the user to the login page or home page after logging out
   res.redirect('/login.html');
 });
 
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const token = authHeader && authHeader.split(' ')[1]; 
   
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, jwtSecret, (err, user) => {
-    if (err) return res.sendStatus(403); // Invalid token
+    if (err) return res.sendStatus(403); 
     req.user = user;
     next();
   });
@@ -232,40 +218,11 @@ app.get('/protected', authenticateToken, (req, res) => {
 });
 
 
-function readSpreadsheet(filePath) {
-  const workbook = xlsx.readFile(filePath);
-  const sheetName = workbook.SheetNames[0];
-  const sheet = workbook.Sheets[sheetName];
-  const data = xlsx.utils.sheet_to_json(sheet);
-  return data.map(player => ({
-    No: player['No.'],
-    Player: player.Player,
-    Ht: player.Ht,
-    Inches: player.Inches
-  }));
-}
-
-const players = readSpreadsheet('public/players.xlsx'); 
-
 app.use(cors());
 
-app.get('/search', (req, res) => {
-    const searchTerm = req.query.term ? req.query.term.toLowerCase() : '';
-    const filteredPlayers = players.filter(player =>
-      player.Player.toLowerCase().includes(searchTerm)
-    );
-    res.json(filteredPlayers);
-  });
-
-app.get('/random', (req, res) => {
-    const randomIndex = Math.floor(Math.random() * players.length);
-    const randomPlayer = players[randomIndex];
-    console.log('Randomly selected player:', randomPlayer);
-    res.json(randomPlayer);
-  });
 
   app.get('/users', (req, res) => {
-    const userId = req.query.user_id;  // Získání userId z query parametrů
+    const userId = req.query.user_id;  
     if (!userId) {
         return res.status(400).json({ error: 'User ID is required' });
     }
@@ -283,13 +240,12 @@ app.get('/random', (req, res) => {
 });
 
 
-app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
+app.use(bodyParser.json()); 
 
   
   app.post('/send-friend-request', (req, res) => {
     const sender_id = req.body.sender_id;
     const receiver_id = req.body.receiver_id;
-    // console.log(req.body); 
 
     if (!sender_id || !receiver_id) {
       return res.status(400).send('Sender and receiver IDs are required.');
@@ -301,7 +257,6 @@ app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
         console.error('Error sending friend request:', err);
         return res.status(500).send('Error sending friend request.');
       }
-      // console.log('Friend request sent successfully');
       res.status(200).send('Friend request sent successfully.');
     });
   });
@@ -320,7 +275,6 @@ app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
         console.error('Error accepting friend request:', err);
         return res.status(500).send('Error accepting friend request.');
       }
-      // console.log('Friend request accepted successfully');
       res.status(200).send('Friend request accepted successfully.');
     });
   });
@@ -339,7 +293,6 @@ app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
         console.error('Error rejecting friend request:', err);
         return res.status(500).send('Error rejecting friend request.');
       }
-      // console.log('Friend request rejected successfully');
       res.status(200).send('Friend request rejected successfully.');
     });
   });
@@ -358,7 +311,6 @@ app.use(bodyParser.json()); // Ujistěte se, že tato řádka je přítomna
         console.error('Error removing friend:', err);
         return res.status(500).send('Error removing friend.');
       }
-      // console.log('Friend removed successfully');
       res.status(200).send('Friend removed successfully.');
     });
   });
