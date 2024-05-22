@@ -189,7 +189,7 @@ window.addEventListener('resize', resizeCanvas);
             return response.json();
         }
 
-        if(response.status === 401 || response.status === 403) {
+        if(response.status === 500 || response.status === 401 || response.status === 403) {
             console.log("není uživatel");
 
             window.location.href = '/login.html';
@@ -202,6 +202,8 @@ window.addEventListener('resize', resizeCanvas);
         const urlParams = new URLSearchParams(new URL(url).search);
 
         const friendId = urlParams.get('user_id');
+
+        setInterval(checkUser, 300000);
 
         fetch(`/friend_info?userId=${friendId}`)
         .then(response => response.json())
@@ -272,6 +274,24 @@ window.addEventListener('resize', resizeCanvas);
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
     });
+
+    function checkUser() {
+        fetch('/get-user-info')
+        .then(response => {
+            if (response.ok) {
+                return;
+            }
+
+            if (response.status === 500 || response.status === 401 || response.status === 403) {
+                console.log("není uživatel");
+                window.location.href = '/login.html';
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    }
 </script>
 </body>
 </html>

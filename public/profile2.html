@@ -242,7 +242,7 @@ let idUser;
             return response.json();
         }
 
-        if(response.status === 401 || response.status === 403) {
+        if(response.status === 500 || response.status === 401 || response.status === 403) {
             console.log("není uživatel");
 
             window.location.href = '/login.html';
@@ -266,6 +266,8 @@ let idUser;
         elements.forEach(element => {
             element.textContent = data.username;
         });
+
+        setInterval(checkUser, 300000); 
 
         fetch(`/profile-picture?userId=${idUser}`)
         .then(response => {
@@ -334,7 +336,25 @@ let idUser;
       .catch((error) => {
           console.error('Error:', error);
       });
-  }
+    }
+
+    function checkUser() {
+        fetch('/get-user-info')
+        .then(response => {
+            if (response.ok) {
+                return;
+            }
+
+            if (response.status === 500 || response.status === 401 || response.status === 403) {
+                console.log("není uživatel");
+                window.location.href = '/login.html';
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    }
 </script>
 </body>
 </html>
