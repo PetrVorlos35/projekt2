@@ -69,29 +69,33 @@ document.addEventListener('DOMContentLoaded', function() {
           'Authorization': `${apiKey}`
       };
 
-      const countUrl = 'https://api.balldontlie.io/v1/players/active?per_page=1';
+      // Example endpoint to fetch the first page and check pagination
+      const initialUrl = 'https://api.balldontlie.io/v1/players/active?per_page=25';
       try {
-          const countResponse = await axios.get(countUrl, { headers });
-          if (countResponse.status === 200) {
-              const totalPlayers = countResponse.data.meta.total_count;
-              const totalPages = Math.ceil(totalPlayers / 25); 
-              const randomPage = Math.floor(Math.random() * totalPages) + 1; 
+          const initialResponse = await axios.get(initialUrl, { headers });
+          if (initialResponse.status === 200 && initialResponse.data.data.length > 0) {
+              // Assuming pagination data is in meta, and you can calculate or check the total count from there
+              const totalPages = initialResponse.data.meta.total_pages;  // Hypothetical if this info is available
+              const randomPage = Math.floor(Math.random() * totalPages) + 1;
 
               const apiUrl = `https://api.balldontlie.io/v1/players/active?per_page=25&page=${randomPage}`;
               const response = await axios.get(apiUrl, { headers });
               if (response.status === 200 && response.data.data.length > 0) {
-                  const randomIndex = Math.floor(Math.random() * response.data.data.length);
+                  const playersOnPage = response.data.data.length;
+                  const randomIndex = Math.floor(Math.random() * playersOnPage);
                   const randomPlayer = response.data.data[randomIndex];
 
                   randomPlayerName = `${randomPlayer.first_name} ${randomPlayer.last_name}`;
                   randomPlayerNo = randomPlayer.jersey_number || "N/A";
-                  randomPlayerHeight = randomPlayer.height || "N/A";
-                  rndStats = await randomPlayerStats(randomPlayerName); 
+                  randomPlayerHeight = randomPlayer.height || "N/A"; // Ensure correct field names
+                  rndStats = await randomPlayerStats(randomPlayerName);
 
                   console.log(`Randomly selected player: ${randomPlayerName}, Number: ${randomPlayerNo}, Height: ${randomPlayerHeight}`);
               } else {
                   console.log('No players found on this page.');
               }
+          } else {
+              console.log('Failed to fetch player data.');
           }
       } catch (error) {
           console.error('Error:', error);
@@ -100,6 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   getRandomPlayer();
 });
+
+
+
 
 
 

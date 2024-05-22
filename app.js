@@ -144,7 +144,8 @@ app.get('/vyhry', (req, res) => {
 });
 
 
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
   
 app.post('/login', (req, res) => {
@@ -152,20 +153,24 @@ app.post('/login', (req, res) => {
 
   const sql = 'SELECT ID, Username, Email FROM Uzivatele WHERE Username = ? AND Heslo = ?';
   db.query(sql, [username, password], (err, results) => {
-      if (err) throw err;
+    if (err) {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
 
-      if (results.length > 0) {
-          const user = results[0]; 
-          const token = jwt.sign({ id: user.ID, username: user.Username, email: user.Email }, jwtSecret, { expiresIn: '1h' });
-      
-          res.cookie('token', token, { httpOnly: true, secure: true }); 
-          res.redirect('/index.html?success=1');
-      } else {
-          console.log('Incorrect Username and/or Password!');
-          res.status(401).send('Incorrect Username and/or Password!');
-      }
+    if (results.length > 0) {
+      const user = results[0];
+      const token = jwt.sign({ id: user.ID, username: user.Username, email: user.Email }, jwtSecret, { expiresIn: '1h' });
+
+      res.cookie('token', token, { httpOnly: true, secure: true });
+      res.status(200).json({ success: true });
+    } else {
+      res.status(401).json({ message: 'Incorrect Username and/or Password!' });
+    }
   });
 });
+
+
+
 
 app.get('/friend_info', (req, res) => {
   const { userId } = req.query;
