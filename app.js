@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const jwtSecret = 'tajnyHeslo'; 
+const cron = require('node-cron');
+const axios = require('axios');
 require('dotenv').config();
 
 
@@ -36,6 +38,126 @@ const db = mysql.createConnection({
 app.get('/api-key', (req, res) => {
   res.json({ apiKey: process.env.API_KEY });
 });
+
+async function getApiKey() {
+  return process.env.API_KEY;
+}
+
+async function getRandomPlayer() {
+  const apiKey = await getApiKey();
+  const headers = {
+      'Authorization': `${apiKey}`
+  };
+
+  const initialUrl = 'https://api.balldontlie.io/v1/players/active?per_page=25';
+  try {
+      const initialResponse = await axios.get(initialUrl, { headers });
+      if (initialResponse.status === 200 && initialResponse.data.data.length > 0) {
+          const totalPages = initialResponse.data.meta.total_pages;
+          const randomPage = Math.floor(Math.random() * totalPages) + 1;
+
+          const apiUrl = `https://api.balldontlie.io/v1/players/active?per_page=25&page=${randomPage}`;
+          const response = await axios.get(apiUrl, { headers });
+          if (response.status === 200 && response.data.data.length > 0) {
+              const playersOnPage = response.data.data.length;
+              const randomIndex = Math.floor(Math.random() * playersOnPage);
+              const randomPlayer = response.data.data[randomIndex];
+
+              const randomPlayerDetails = {
+                  name: `${randomPlayer.first_name} ${randomPlayer.last_name}`,
+                  team: randomPlayer.team.full_name,
+                  division: randomPlayer.team.division,
+                  conference: randomPlayer.team.conference,
+                  position: randomPlayer.position,
+                  height: randomPlayer.height,
+                  number: randomPlayer.jersey_number || 'N/A'
+              };
+
+              console.log('Randomly selected player:', randomPlayerDetails);
+              return randomPlayerDetails;
+          } else {
+              console.log('No players found on this page.');
+          }
+      } else {
+          console.log('Failed to fetch player data.');
+      }
+  } catch (error) {
+      console.error('Error:', error);
+  }
+  return null;
+}
+
+async function insertDailyPlayer() {
+  const playerDetails = await getRandomPlayer();
+  if (playerDetails) {
+      const sql = 'INSERT INTO daily_players (player_name, team, division, conference, position, height, number) VALUES (?, ?, ?, ?, ?, ?, ?)';
+      db.query(sql, [playerDetails.name, playerDetails.team, playerDetails.division, playerDetails.conference, playerDetails.position, playerDetails.height, playerDetails.number], (err, result) => {
+          if (err) {
+              console.error('Error saving daily player:', err);
+          } else {
+              console.log('Daily player saved:', playerDetails);
+          }
+      });
+  }
+}
+
+// Schedule a task to run every 24 hours
+cron.schedule('0 0 * * *', async () => {
+  await insertDailyPlayer();
+});
+
+// Generate a player immediately
+insertDailyPlayer();
+
+// API endpoint to get the daily player
+app.get('/daily-player', (req, res) => {
+  const sql = 'SELECT id, player_name, team, division, conference, position, height, number FROM daily_players ORDER BY generated_at DESC LIMIT 1';
+  db.query(sql, (err, result) => {
+      if (err) return res.status(500).send({ error: 'Error fetching daily player' });
+      if (result.length > 0) {
+          res.json(result[0]);
+      } else {
+          res.json({ player_name: 'No player found for today' });
+      }
+  });
+});
+
+app.get('/save-daily-stats', (req, res) => {
+  const { userId, attempts, winLoss } = req.query;
+  const sql = `
+      INSERT INTO daily_stats (user_id, daily_player_id, attempts, win_loss)
+      VALUES (?, (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1), ?, ?)
+  `;
+  db.query(sql, [userId, attempts, winLoss], (err, result) => {
+      if (err) return res.status(500).send('Error saving daily stats');
+      res.json({ success: true });
+
+      if (winLoss == 1) {
+          const guessSql = `
+              INSERT INTO daily_guesses (user_id, daily_player_id)
+              VALUES (?, (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1))
+          `;
+          db.query(guessSql, [userId], (err, result) => {
+              if (err) console.error('Error saving daily guess:', err);
+          });
+      }
+  });
+});
+
+// API endpoint to check if the user has already guessed the daily player
+app.get('/check-daily-guess', (req, res) => {
+  const { userId } = req.query;
+  const sql = `
+      SELECT COUNT(*) AS guessed
+      FROM daily_guesses
+      WHERE user_id = ? AND daily_player_id = (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1)
+  `;
+  db.query(sql, [userId], (err, result) => {
+      if (err) return res.status(500).send({ error: 'Error checking daily guess' });
+      res.json(result[0]);
+  });
+});
+
 
   
 app.post('/register', (req, res) => {
