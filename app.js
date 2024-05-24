@@ -95,19 +95,19 @@ async function insertDailyPlayer() {
           if (err) {
               console.error('Error saving daily player:', err);
           } else {
-              console.log('Daily player saved:', playerDetails);
+              // console.log('Daily player saved:', playerDetails);
           }
       });
   }
 }
 
 // Schedule a task to run every 24 hours
-cron.schedule('0 0 * * *', async () => {
+cron.schedule('0 12 * * *', async () => {
   await insertDailyPlayer();
 });
 
 // Generate a player immediately
-insertDailyPlayer();
+// insertDailyPlayer();
 
 // API endpoint to get the daily player
 app.get('/daily-player', (req, res) => {
@@ -123,40 +123,38 @@ app.get('/daily-player', (req, res) => {
 });
 
 app.get('/save-daily-stats', (req, res) => {
-  const { userId, attempts, winLoss } = req.query;
+  const { userId, attempts, winLoss, guesses } = req.query;
   const sql = `
-      INSERT INTO daily_stats (user_id, daily_player_id, attempts, win_loss)
-      VALUES (?, (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1), ?, ?)
+      INSERT INTO daily_stats (user_id, daily_player_id, attempts, win_loss, guesses)
+      VALUES (?, (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1), ?, ?, ?)
   `;
-  db.query(sql, [userId, attempts, winLoss], (err, result) => {
+  db.query(sql, [userId, attempts, winLoss, guesses], (err, result) => {
       if (err) return res.status(500).send('Error saving daily stats');
       res.json({ success: true });
-
-      if (winLoss == 1) {
-          const guessSql = `
-              INSERT INTO daily_guesses (user_id, daily_player_id)
-              VALUES (?, (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1))
-          `;
-          db.query(guessSql, [userId], (err, result) => {
-              if (err) console.error('Error saving daily guess:', err);
-          });
-      }
   });
 });
+
 
 // API endpoint to check if the user has already guessed the daily player
 app.get('/check-daily-guess', (req, res) => {
   const { userId } = req.query;
   const sql = `
-      SELECT COUNT(*) AS guessed
-      FROM daily_guesses
+      SELECT *
+      FROM daily_stats
       WHERE user_id = ? AND daily_player_id = (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1)
   `;
   db.query(sql, [userId], (err, result) => {
       if (err) return res.status(500).send({ error: 'Error checking daily guess' });
-      res.json(result[0]);
+
+      if (result.length === 0) {
+          console.log('User has not guessed the daily player yet');
+          res.json({ continueGame: true });
+      } else {
+          res.json({ continueGame: false, data: result[0] });
+      }
   });
 });
+
 
 
   

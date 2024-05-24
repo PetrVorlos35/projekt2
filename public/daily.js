@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     async function fetchDailyPlayer() {
         try {
@@ -25,46 +26,130 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('dailyPlayerName').textContent = 'Error loading player';
         }
     }
-
-    async function checkIfUserGuessed() {
-        try {
-            const response = await fetch(`/check-daily-guess?userId=${window.idUser}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            if (data.guessed > 0) {
-                disableGuessInput();
-            }
-        } catch (error) {
-            console.error('Error checking if user guessed:', error);
-        }
-    }
-
-    function disableGuessInput() {
-        document.getElementById('searchBar').disabled = true;
-        document.getElementById('guessBtn').disabled = true;
-        document.getElementById('guessBtn').hidden = true;
-        document.getElementById('searchBar').placeholder = 'You have already guessed the player for today';
-    }
+    
+    
+    
 
     function updateCountdown() {
         const now = new Date();
         const nextDay = new Date();
-        nextDay.setHours(24, 0, 0, 0); // Next midnight
+        nextDay.setHours(12, 0, 0, 0); 
+    
+        if (now > nextDay) {
+            nextDay.setDate(nextDay.getDate() + 1); 
+    
+            if (!localStorage.getItem('pageRefreshed')) {
+                localStorage.setItem('pageRefreshed', 'true'); 
+                setTimeout(() => {
+                    location.reload(); 
+                }, 1000); 
+                return;
+            }
+        } else {
+            localStorage.removeItem('pageRefreshed'); 
+        }
+    
         const timeDiff = nextDay - now;
-
+    
         const hours = Math.floor(timeDiff / 1000 / 60 / 60);
         const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
+    
         document.getElementById('countdownTimer').textContent = `${hours}h ${minutes}m ${seconds}s`;
     }
 
     setInterval(updateCountdown, 1000);
-    updateCountdown(); // Initial call
+    updateCountdown();
     fetchDailyPlayer();
 });
+
+let ID;
+fetch('/get-user-info')
+.then(response => {
+    if (response.ok) {
+        return response.json();
+    }
+})
+.then(data => {
+    ID = data.id;
+})
+.catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+});
+
+
+async function checkIfUserGuessed() {
+    try {
+        const response = await fetch(`/check-daily-guess?userId=${ID}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data);
+        if (!data.continueGame) {
+            disableGuessInput(data.data);
+        }
+    } catch (error) {
+        console.error('Error checking if user guessed:', error);
+    }
+}
+
+function disableGuessInput(data) {
+    const searchBar = document.getElementById('searchBar');
+    const guessBtn = document.getElementById('guessBtn');
+    const popupBtn = document.getElementById('popupBtn');
+
+    popupBtn.hidden = false;
+    searchBar.disabled = true;
+    guessBtn.disabled = true;
+    guessBtn.hidden = true;
+
+    searchBar.placeholder = 'You have already guessed the player for today';
+
+    if (data) {
+        const guesses = JSON.parse(data.guesses);
+        fetchGuessedPlayers(guesses);
+    }
+}
+
+async function fetchGuessedPlayers(guessedPlayers) {
+    const apiKey = await getApiKey();
+    const headers = {
+        'Authorization': ` ${apiKey}`
+    };
+
+    for (const playerName of guessedPlayers) {
+        var nameSplit = playerName.split(" ");
+        let playerFirstName = nameSplit[0];
+        let playerLastName = nameSplit[1];
+
+        const apiUrl = `https://api.balldontlie.io/v1/players/active?first_name=${playerFirstName}&last_name=${playerLastName}`;
+        try {
+            const response = await axios.get(apiUrl, { headers });
+            if (response.status === 200 && response.data.data.length > 0) {
+                const player = response.data.data[0];
+
+                // console.log(player);
+
+                const tableBody = document.getElementById('playerData');
+                const row = tableBody.insertRow();
+                row.className = 'player-row';
+                row.insertCell(0).innerHTML = player.first_name + ' ' + player.last_name;
+                row.insertCell(1).innerHTML = player.team.full_name;
+                row.insertCell(2).innerHTML = player.team.conference;
+                row.insertCell(3).innerHTML = player.team.division;
+                row.insertCell(4).innerHTML = player.position;
+                row.insertCell(5).innerHTML = player.height;
+                row.insertCell(6).innerHTML = player.jersey_number;
+
+            } else {
+                console.log(`No player found with the name: ${playerName}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
 
 document.getElementById('searchBar').addEventListener('input', async function() {
     const searchTerm = this.value.trim();
@@ -165,6 +250,8 @@ async function fetchSinglePlayer(playerName) {
             row.insertCell(5).innerHTML = player.height;
             row.insertCell(6).innerHTML = player.jersey_number;
 
+            guessedPlayers.push(playerName);
+
             getInput();
 
             if (guesses > 7) {
@@ -186,6 +273,8 @@ async function fetchSinglePlayer(playerName) {
     }
 }
 
+let guessedPlayers = [];
+
 async function getApiKey() {
     try {
         const response = await fetch('http://localhost:3000/api-key');
@@ -198,7 +287,7 @@ async function getApiKey() {
 
 function saveDailyStats(userId, attempts, winLoss) {
     playAgainBtn.hidden = false;
-    fetch(`/save-daily-stats?userId=${userId}&attempts=${attempts}&winLoss=${winLoss}`)
+    fetch(`/save-daily-stats?userId=${ID}&attempts=${attempts}&winLoss=${winLoss}&guesses=${encodeURIComponent(JSON.stringify(guessedPlayers))}`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -233,7 +322,7 @@ function checkWin(playerName, row, player, playerData) {
         userinput.disabled = true;
         userinput.placeholder = `You won!! Guesses: ${guesses}`;
         wonOrLost = 1;
-        saveDailyStats(idUser, guesses, 1);
+        saveDailyStats(ID, guesses, 1);
         return true;
     } else {
         if (guesses < 8) {
@@ -327,7 +416,7 @@ function lost(row) {
         cell.style.color = 'white';
     });
     wonOrLost = 0;
-    saveDailyStats(idUser, guesses, 0);
+    saveDailyStats(ID, guesses, 0);
 }
 
 // Function to toggle the popup display
