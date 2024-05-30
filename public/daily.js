@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', function() {
             window.randomPlayerHeight = data.height;
             window.randomPlayerNo = data.number;
 
-            document.getElementById('dailyPlayerName').textContent = data.player_name;
+            // document.getElementById('dailyPlayerName').textContent = data.player_name;
 
             // Check if the user has already guessed the daily player
             checkIfUserGuessed();
         } catch (error) {
             console.error('Error fetching daily player:', error);
-            document.getElementById('dailyPlayerName').textContent = 'Error loading player';
+            // document.getElementById('dailyPlayerName').textContent = 'Error loading player';
         }
     }
     
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCountdown() {
         const now = new Date();
         const nextDay = new Date();
-        nextDay.setHours(12, 0, 0, 0); 
+        nextDay.setHours(10, 37, 0, 0); 
     
         if (now > nextDay) {
             nextDay.setDate(nextDay.getDate() + 1); 
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('pageRefreshed', 'true'); 
                 setTimeout(() => {
                     location.reload(); 
-                }, 1000); 
+                }, 2000); 
                 return;
             }
         } else {
@@ -399,7 +399,7 @@ function checkWin(playerName, row, player, playerData) {
                 row.cells[1].style.color = 'white';
             }
         } else {
-            lost(row);
+            // lost(row);
         }
     }
 }

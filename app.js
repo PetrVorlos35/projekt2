@@ -102,12 +102,28 @@ async function insertDailyPlayer() {
 }
 
 // Schedule a task to run every 24 hours
-cron.schedule('0 12 * * *', async () => {
+cron.schedule('37 10 * * *', async () => {
   await insertDailyPlayer();
 });
 
 // Generate a player immediately
 // insertDailyPlayer();
+
+// API endpoint to get a random player
+app.get('/get-random-player', async (req, res) => {
+  try {
+      const randomPlayer = await getRandomPlayer();
+      if (randomPlayer) {
+          res.json(randomPlayer);
+      } else {
+          res.status(500).json({ error: 'Failed to fetch random player' });
+      }
+  } catch (error) {
+      console.error('Error fetching random player:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 // API endpoint to get the daily player
 app.get('/daily-player', (req, res) => {
@@ -124,15 +140,93 @@ app.get('/daily-player', (req, res) => {
 
 app.get('/save-daily-stats', (req, res) => {
   const { userId, attempts, winLoss, guesses } = req.query;
-  const sql = `
-      INSERT INTO daily_stats (user_id, daily_player_id, attempts, win_loss, guesses)
-      VALUES (?, (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1), ?, ?, ?)
-  `;
+
+  console.log(`Ukládám denní statistiky pro uživatele ${userId}: pokusy = ${attempts}, výsledek = ${winLoss}, hádání = ${guesses}`);
+
+  const sql = 'CALL InsertDailyStats(?, (SELECT id FROM daily_players ORDER BY generated_at DESC LIMIT 1), ?, ?, ?)';
   db.query(sql, [userId, attempts, winLoss, guesses], (err, result) => {
       if (err) return res.status(500).send('Error saving daily stats');
       res.json({ success: true });
   });
 });
+
+app.post('/save-rapid-stats', (req, res) => {
+  const { user_id, correct_guesses } = req.query;
+
+  if (!user_id || correct_guesses === undefined) {
+      return res.status(400).send('User ID and correct guesses are required.');
+  }
+
+  const sql = 'INSERT INTO rapid_game_stats (user_id, correct_guesses) VALUES (?, ?)';
+  db.query(sql, [user_id, correct_guesses], (err, result) => {
+      if (err) {
+          console.error('Error saving rapid game stats:', err);
+          return res.status(500).send('Failed to save rapid game stats.');
+      }
+      res.status(200).send('Rapid game stats saved successfully.');
+  });
+});
+
+app.get('/user-rapid-stats', (req, res) => {
+  const { user_id } = req.query;
+
+  if (!user_id) {
+      return res.status(400).send('User ID is required.');
+  }
+
+  const sql = `
+      SELECT 
+          user_id,
+          COUNT(*) AS games_played,
+          SUM(correct_guesses) AS total_correct_guesses,
+          MAX(correct_guesses) AS max_correct_guesses,
+          AVG(correct_guesses) AS avg_correct_guesses
+      FROM 
+          rapid_game_stats
+      WHERE 
+          user_id = ?
+      GROUP BY 
+          user_id
+  `;
+  db.query(sql, [user_id], (err, results) => {
+      if (err) {
+          console.error('Error fetching user rapid stats:', err);
+          return res.status(500).send('Failed to fetch user rapid stats.');
+      }
+      if (results.length > 0) {
+          res.json(results[0]);
+      } else {
+          res.status(404).send('No stats found for this user.');
+      }
+  });
+});
+
+// Endpoint to get rapid game leaderboard
+app.get('/rapid-leaderboard', (req, res) => {
+  const sql = `
+      SELECT 
+          rgs.id AS game_id,
+          rgs.user_id,
+          u.Username,
+          rgs.correct_guesses,
+          rgs.game_date
+      FROM 
+          rapid_game_stats rgs
+      JOIN 
+          Uzivatele u ON rgs.user_id = u.ID
+      ORDER BY 
+          rgs.correct_guesses DESC
+      LIMIT 10
+  `;
+  db.query(sql, (err, results) => {
+      if (err) {
+          console.error('Error fetching leaderboard:', err);
+          return res.status(500).send('Failed to fetch leaderboard.');
+      }
+      res.json(results);
+  });
+});
+
 
 
 // API endpoint to check if the user has already guessed the daily player
@@ -233,6 +327,26 @@ app.get('/statistiky', (req, res) => {
       Statistiky S
     WHERE 
       UzivateleID = ?;`;
+
+  db.query(sql, [userId], (err, result) => {
+    if (err) res.send(err);
+    else res.json(result[0]);
+  });
+});
+
+app.get('/dailyStats', (req, res) => {
+  const { userId } = req.query; 
+  const sql = `
+    SELECT 
+      user_id,
+      COUNT(*) AS PocetOdehranychHer,
+      (SELECT CurrentWinStreak FROM daily_stats WHERE user_id = DS.user_id ORDER BY id DESC LIMIT 1) AS CurrentWinStreak,
+      MAX(LongestWinStreak) AS LongestWinStreak,
+      (SUM(win_loss) / COUNT(*)) * 100 AS ProcentoVyhry
+    FROM 
+      daily_stats DS
+    WHERE 
+      user_id = ?;`;
 
   db.query(sql, [userId], (err, result) => {
     if (err) res.send(err);

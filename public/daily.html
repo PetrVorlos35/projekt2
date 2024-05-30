@@ -16,6 +16,44 @@
         #logout{
           transform: rotate(-90deg);
         }
+        @keyframes revealFromTop {
+      0% {
+        opacity: 0;
+        max-height: 0;
+      }
+      100% {
+        opacity: 1;
+        max-height: 500px; /* Adjust based on content size */
+      }
+    }
+
+    @keyframes hideToTop {
+      0% {
+        opacity: 1;
+        max-height: 500px; /* Adjust based on content size */
+      }
+      100% {
+        opacity: 0;
+        max-height: 0;
+      }
+    }
+
+    .reveal {
+      animation: revealFromTop 0.5s forwards;
+    }
+
+    .hide {
+      animation: hideToTop 0.5s forwards;
+    }
+    #helpSectionContainer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+
+    #helpSectionContainer.reveal {
+      max-height: 500px; /* Adjust this value based on the actual content height */
+    }
       </style>
     </head>
 <body class="bg-gray-900">
@@ -28,9 +66,9 @@
                       NBA Guessing Game<sub class="text-xs ml-1">Daily</sub>
                     </span>
                   </a>
-                  <a href="weekly.html" class="ml-3 hover:text-green-500">
+                  <a href="rapid.html" class="ml-3 hover:text-green-500">
                     <button class="p-2">
-                      <span class="text-xs font-semibold">Weekly</span>
+                      <span class="text-xs font-semibold">Rapid Fire</span>
                     </button>
                   </a>
               <a href="index.html" class="ml-3 hover:text-green-500">
@@ -40,6 +78,15 @@
               </a>
             </div>
             <div class="flex items-center">
+              <button onclick="helpSection()" id="helpBtn" class="flex items-center p-2 ml-4 text-sm font-medium hover:text-blue-500">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.89" height="21"> 
+                    <g> 
+                        <rect height="21" opacity="0" width="12.89" x="0" y="0"/> 
+                        <path d="M5.713 15.375C6.379 15.375 6.719 14.933 6.719 14.425C6.719 14.256 6.719 14.088 6.719 13.947C6.738 12.827 7.297 12.112 9.237 10.767C11.343 9.31 12.711 7.782 12.711 5.576C12.711 2.142 9.75 0.085 6.234 0.085C3.552 0.085 1.255 1.428 0.32 3.726C0.091 4.266 0 4.773 0 5.182C0 5.749 0.33 6.143 0.927 6.143C1.44 6.143 1.774 5.841 1.919 5.338C2.468 3.493 4.078 2.551 6.114 2.551C8.588 2.551 10.492 4.02 10.492 5.976C10.492 7.253 9.484 8.267 7.918 9.457C5.975 10.83 4.747 12.14 4.747 14.2C4.747 14.493 4.747 14.775 4.747 15.068C4.747 15.575 5.064 15.375 5.713 15.375ZM5.719 21C6.545 21 7.196 20.278 7.196 19.352C7.196 18.424 6.545 17.723 5.719 17.723C4.793 17.723 4.072 18.424 4.072 19.352C4.072 20.278 4.793 21 5.719 21Z" fill="currentColor" fill-opacity="0.85"/> 
+                    </g> 
+                </svg>
+                <span class="text-xs font-semibold ml-2">Help</span>
+            </button>
               <button class="p-2">
                 <a href="profile2.html" class="flex items-center hover:text-green-500">
                   <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17.4219" height="18.0957"> 
@@ -64,10 +111,31 @@
             </div>
           </nav>
 
+          <div id="helpSection" class="hidden bg-gray-800 p-6 text-white mt-4 mx-auto max-w-2xl border border-gray-700 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-3xl font-bold">How to Play</h2>
+              <button onclick="helpSection()" id="helpBtn2" class="text-white text-xl leading-none hover:text-red-500">&times;</button>
+            </div>
+            <hr class="border-t border-gray-500 mb-4">
+            <ol class="list-decimal ml-6">
+              <li class="mb-2">Try to guess the player in <span class="font-bold">8 guesses</span>.</li>
+              <li class="mb-2"><span class="text-green-500 font-bold">Green</span> is an exact match.</li>
+              <li class="mb-2"><span class="text-yellow-500 font-bold">Yellow</span> is a close match. A close...
+                <ul class="list-disc ml-6">
+                  <li class="mb-1"><span class="italic">Position</span> indicates the player plays at least 1 of those positions.</li>
+                  <li class="mb-1"><span class="italic">Height or number</span> is off by at most 2.</li>
+                </ul>
+              </li>
+              <li class="mb-2">New players are released <span class="font-bold">every day at midnight! (CET)</span></li>
+            </ol>
+          </div>
+
           <div class="daily-challenge text-center p-4">
-            <h2>Daily Challenge</h2>
-            <p id="dailyPlayerName">Loading...</p>
-            <p id="countdown">Next player in: <span id="countdownTimer"></span></p>
+            <h2 class="text-2xl font-bold text-white mb-2">Daily Player</h2>
+            <!-- <p id="dailyPlayerName">Loading...</p> -->
+            <p id="countdown" class="text-white">
+              Next player in: <span id="countdownTimer" class="font-semibold text-blue-600"></span>
+            </p>
           </div>
         
           <div class="game text-center p-2 position-relative top-50 flex flex-col">
@@ -155,6 +223,21 @@
     </div>
 
     <script>
+      function helpSection() {
+        const helpSection = document.getElementById('helpSection');
+        
+        if (helpSection.classList.contains('hidden')) {
+          helpSection.classList.remove('hidden');
+          helpSection.classList.remove('hide');
+          helpSection.classList.add('reveal');
+        } else {
+          helpSection.classList.remove('reveal');
+          helpSection.classList.add('hide');
+          setTimeout(() => {
+            helpSection.classList.add('hidden');
+          }, 500); // Čas musí odpovídat délce animace hide
+        }
+      }
 
         let idUser;
         
