@@ -76,7 +76,7 @@
       </div>
 
       <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
-        <h2 class="text-2xl font-bold mb-4 text-center">Statistics</h2> 
+        <h2 class="text-2xl font-bold mb-4 text-center">Unlimited Statistics</h2> 
         <div class="grid gap-4 grid-cols-2">
           <div>Games played:</div>
           <div id="games">0</div> 
@@ -93,7 +93,41 @@
       </div>
 
       <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
-        <h2 class="text-2xl font-bold mb-4 text-white">Guess distribution</h2>
+        <h2 class="text-2xl font-bold mb-4 text-center">Daily Statistics</h2> 
+        <div class="grid gap-4 grid-cols-2">
+          <div>Games played:</div>
+          <div id="gamesDaily">0</div> 
+          
+          <div>Longest streak:</div>
+          <div id="streakLDaily">0</div> 
+
+          <div>Current streak:</div>
+          <div id="streakCDaily">0</div> 
+
+          <div>Win percentage:</div>
+          <div id="winDaily">0%</div> 
+        </div>
+      </div>
+
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
+        <h2 class="text-2xl font-bold mb-4 text-center">Rapid Fire Statistics</h2> 
+        <div class="grid gap-4 grid-cols-2">
+            <div>Games Played:</div>
+            <div id="gamesPlayed">0</div> 
+            
+            <div>Total score:</div>
+            <div id="correctGuesses">0</div> 
+    
+            <div>Best score:</div>
+            <div id="maxCorrectGuesses">0</div> 
+    
+            <div>Average score:</div>
+            <div id="avgCorrectGuesses">0</div> 
+        </div>
+    </div>
+
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
+        <h2 class="text-2xl font-bold mb-4 text-white">Guess distribution for Unlimited</h2>
         <div class="grid gap-4">
           <div class="w-full flex justify-center">
             <canvas id="myChart" class="max-w-full"></canvas>
@@ -249,6 +283,28 @@ window.addEventListener('resize', resizeCanvas);
             document.getElementById("streakL").textContent = data.LongestWinStreak;
             document.getElementById("streakC").textContent = data.CurrentWinStreak;
             document.getElementById("win").textContent = data.ProcentoVyhry.toFixed(2) + '%';
+        })
+        .catch(error => console.error('Error:', error));
+
+        fetch(`http://localhost:3000/dailyStats?userId=${friendId}`)
+        .then(response => response.json())
+        .then(data => {
+          
+            document.getElementById("gamesDaily").textContent = data.PocetOdehranychHer;
+            document.getElementById("streakLDaily").textContent = data.LongestWinStreak;
+            document.getElementById("streakCDaily").textContent = data.CurrentWinStreak;
+            document.getElementById("winDaily").textContent = data.ProcentoVyhry.toFixed(2) + '%';
+        })
+        .catch(error => console.error('Error:', error));
+
+        fetch(`http://localhost:3000/user-rapid-stats?user_id=${friendId}`)
+        .then(response => response.json())
+        .then(data => {
+          
+            document.getElementById('correctGuesses').textContent = data.total_correct_guesses;
+            document.getElementById('gamesPlayed').textContent = data.games_played;
+            document.getElementById('maxCorrectGuesses').textContent = data.max_correct_guesses;
+            document.getElementById('avgCorrectGuesses').textContent = data.avg_correct_guesses.toFixed(2);
         })
         .catch(error => console.error('Error:', error));
 
