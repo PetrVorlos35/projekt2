@@ -14,37 +14,6 @@ document.getElementById('searchBar').addEventListener('input', async function() 
               const suggestionsList = document.getElementById('suggestions');
               suggestionsList.innerHTML = players.map(player => `<li tabindex="0">${player.first_name} ${player.last_name}</li>`).join('');
 
-              let currentFocus = -1; 
-
-              suggestionsList.addEventListener('keydown', function(e) {
-                  if (e.key === "ArrowDown") {
-                      currentFocus++;
-                      addActive(suggestionsList.querySelectorAll('li'));
-                  } else if (e.key === "ArrowUp") {
-                      currentFocus--;
-                      addActive(suggestionsList.querySelectorAll('li'));
-                  } else if (e.key === "Enter") {
-                      e.preventDefault(); 
-                      if (currentFocus > -1) {
-                          suggestionsList.querySelectorAll('li')[currentFocus].click();
-                      }
-                  }
-              });
-
-              function addActive(li) {
-                  if (!li) return;
-                  removeActive(li);
-                  if (currentFocus >= li.length) currentFocus = 0;
-                  if (currentFocus < 0) currentFocus = li.length - 1;
-                  li[currentFocus].classList.add('active');
-              }
-
-              function removeActive(li) {
-                  for (let i = 0; i < li.length; i++) {
-                      li[i].classList.remove('active');
-                  }
-              }
-
               document.querySelectorAll('#suggestions li').forEach(item => {
                   item.addEventListener('click', function() {
                       document.getElementById('searchBar').value = this.textContent.trim();
@@ -69,13 +38,11 @@ document.addEventListener('DOMContentLoaded', function() {
           'Authorization': `${apiKey}`
       };
 
-      // Example endpoint to fetch the first page and check pagination
       const initialUrl = 'https://api.balldontlie.io/v1/players/active?per_page=25';
       try {
           const initialResponse = await axios.get(initialUrl, { headers });
           if (initialResponse.status === 200 && initialResponse.data.data.length > 0) {
-              // Assuming pagination data is in meta, and you can calculate or check the total count from there
-              const totalPages = initialResponse.data.meta.total_pages;  // Hypothetical if this info is available
+              const totalPages = initialResponse.data.meta.total_pages; 
               const randomPage = Math.floor(Math.random() * totalPages) + 1;
 
               const apiUrl = `https://api.balldontlie.io/v1/players/active?per_page=25&page=${randomPage}`;
@@ -87,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                   randomPlayerName = `${randomPlayer.first_name} ${randomPlayer.last_name}`;
                   randomPlayerNo = randomPlayer.jersey_number || "N/A";
-                  randomPlayerHeight = randomPlayer.height || "N/A"; // Ensure correct field names
+                  randomPlayerHeight = randomPlayer.height || "N/A"; 
                   rndStats = await randomPlayerStats(randomPlayerName);
 
                   console.log(`Randomly selected player: ${randomPlayerName}, Number: ${randomPlayerNo}, Height: ${randomPlayerHeight}`);
@@ -334,7 +301,6 @@ function saveStats(userId, attempts, winLoss) {
   fetch(`http://localhost:3000/saveStats?userId=${userId}&attempts=${attempts}&winLoss=${winLoss}`)
       .then(response => response.json())
       .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
 }
 
 async function fetchSinglePlayer(playerName) {
