@@ -18,11 +18,11 @@ app.use(cookieParser());
 app.use(express.static('public'));
 
 const db = mysql.createConnection({
-    host: 'db.bagros.eu',
-    user: 'vorel',
-    password: 'tajnyVorel',
-    database: 'vorelDB', 
-    port: 8100
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE, 
+    port: process.env.DB_PORT
   });
   
   db.connect((err) => {
