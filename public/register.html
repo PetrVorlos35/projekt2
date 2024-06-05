@@ -36,7 +36,7 @@
 
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
-                <input id="password" name="password" type="password" required class="appearance-none rounded-md relative block w-full px-3 py-2 bg-gray-700 text-gray-300 border border-gray-600 placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="password">
+                <input id="password" name="password" type="password"  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"  required class="appearance-none rounded-md relative block w-full px-3 py-2 bg-gray-700 text-gray-300 border border-gray-600 placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="password">
             </div>
 
             <div>
@@ -66,6 +66,15 @@
             }
             output.style.display = 'block'; // Make the image visible
         });
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confPassword = document.getElementById("password2").value;
+            if (password !== confPassword) {
+                alert("Passwords do not match.");
+                return false;
+            }
+            return true;
+        }
     </script>
       
 </body>
