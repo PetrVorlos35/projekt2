@@ -118,8 +118,8 @@ async function fetchGuessedPlayers(guessedPlayers) {
         'Authorization': ` ${apiKey}`
     };
 
-    for (const playerName of guessedPlayers) {
-        var nameSplit = playerName.split(" ");
+    const playerPromises = guessedPlayers.map(async (playerName) => {
+        const nameSplit = playerName.split(" ");
         let playerFirstName = nameSplit[0];
         let playerLastName = nameSplit[1];
 
@@ -127,29 +127,35 @@ async function fetchGuessedPlayers(guessedPlayers) {
         try {
             const response = await axios.get(apiUrl, { headers });
             if (response.status === 200 && response.data.data.length > 0) {
-                const player = response.data.data[0];
-
-                // console.log(player);
-
-                const tableBody = document.getElementById('playerData');
-                const row = tableBody.insertRow();
-                row.className = 'player-row';
-                row.insertCell(0).innerHTML = player.first_name + ' ' + player.last_name;
-                row.insertCell(1).innerHTML = player.team.full_name;
-                row.insertCell(2).innerHTML = player.team.conference;
-                row.insertCell(3).innerHTML = player.team.division;
-                row.insertCell(4).innerHTML = player.position;
-                row.insertCell(5).innerHTML = player.height;
-                row.insertCell(6).innerHTML = player.jersey_number;
-
+                return response.data.data[0];
             } else {
                 console.log(`No player found with the name: ${playerName}`);
+                return null;
             }
         } catch (error) {
             console.error('Error:', error);
+            return null;
         }
-    }
+    });
+
+    const players = await Promise.all(playerPromises);
+
+    const tableBody = document.getElementById('playerData');
+    players.forEach(player => {
+        if (player) {
+            const row = tableBody.insertRow();
+            row.className = 'player-row';
+            row.insertCell(0).innerHTML = player.first_name + ' ' + player.last_name;
+            row.insertCell(1).innerHTML = player.team.full_name;
+            row.insertCell(2).innerHTML = player.team.conference;
+            row.insertCell(3).innerHTML = player.team.division;
+            row.insertCell(4).innerHTML = player.position;
+            row.insertCell(5).innerHTML = player.height;
+            row.insertCell(6).innerHTML = player.jersey_number;
+        }
+    });
 }
+
 
 document.getElementById('searchBar').addEventListener('input', async function() {
     const searchTerm = this.value.trim();

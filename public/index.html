@@ -15,44 +15,22 @@
     #logout{
       transform: rotate(-90deg);
     }
-    @keyframes revealFromTop {
-      0% {
-        opacity: 0;
-        max-height: 0;
-      }
-      100% {
-        opacity: 1;
-        max-height: 500px; /* Adjust based on content size */
-      }
-    }
-
-    @keyframes hideToTop {
-      0% {
-        opacity: 1;
-        max-height: 500px; /* Adjust based on content size */
-      }
-      100% {
-        opacity: 0;
-        max-height: 0;
-      }
-    }
-
-    .reveal {
-      animation: revealFromTop 0.5s forwards;
-    }
-
-    .hide {
-      animation: hideToTop 0.5s forwards;
-    }
-    #helpSectionContainer {
+    #helpSection {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.5s ease-out;
+      transition: max-height 0.5s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out;
+      opacity: 0;
+      padding: 0; /* No padding when closed */
     }
 
-    #helpSectionContainer.reveal {
+    #helpSection.reveal {
       max-height: 500px; /* Adjust this value based on the actual content height */
+      opacity: 1;
+      padding: 24px; /* Adjust the padding value to match the p-6 class */
     }
+
+
+
   </style>
 </head>
 <body class="bg-gray-900">
@@ -87,7 +65,7 @@
             </g> 
         </svg>
         <span class="text-xs font-semibold ml-2">Help</span>
-    </button>
+      </button>
     
       <button class="p-2">
         <a href="profile2.html" class="flex items-center hover:text-green-500">
@@ -112,30 +90,32 @@
       </a>
     </div>
   </nav>
-
-<div id="helpSection" class="hidden bg-gray-800 p-6 text-white mt-4 mx-auto max-w-2xl border border-gray-700 rounded-lg">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-3xl font-bold">How to Play</h2>
-    <button onclick="helpSection()" id="helpBtn2" class="text-white text-xl leading-none hover:text-red-500">&times;</button>
+  
+  <div id="helpSection" class="bg-gray-800  mt-1 mb-0 text-white mx-auto max-w-2xl border border-gray-700 rounded-lg">
+    <div class="flex justify-between items-center mb-0">
+      <h2 class="text-3xl font-bold">How to Play</h2>
+      <button onclick="helpSection()" id="helpBtn2" type="button" class="text-white text-xl leading-none hover:text-red-500">&times;</button>
+    </div>
+    <hr class="border-t border-gray-500 mb-4">
+    <ol class="list-decimal ml-6">
+      <li class="mb-2">Try to guess the player in <span class="font-bold">8 guesses</span>.</li>
+      <li class="mb-2"><span class="text-green-500 font-bold">Green</span> is an exact match.</li>
+      <li class="mb-2"><span class="text-yellow-500 font-bold">Yellow</span> is a close match. A close...
+        <ul class="list-disc ml-6">
+          <li class="mb-1"><span class="italic">Position</span> indicates the player plays at least 1 of those positions.</li>
+          <li class="mb-1"><span class="italic">Height or number</span> is off by at most 2.</li>
+        </ul>
+      </li>
+      <li class="mb-2">New players in <span class="font-bold">Unlimited</span> is after <span class="font-bold">each guess.</span></li>
+    </ol>
   </div>
-  <hr class="border-t border-gray-500 mb-4">
-  <ol class="list-decimal ml-6">
-    <li class="mb-2">Try to guess the player in <span class="font-bold">8 guesses</span>.</li>
-    <li class="mb-2"><span class="text-green-500 font-bold">Green</span> is an exact match.</li>
-    <li class="mb-2"><span class="text-yellow-500 font-bold">Yellow</span> is a close match. A close...
-      <ul class="list-disc ml-6">
-        <li class="mb-1"><span class="italic">Position</span> indicates the player plays at least 1 of those positions.</li>
-        <li class="mb-1"><span class="italic">Height or number</span> is off by at most 2.</li>
-      </ul>
-    </li>
-    <li class="mb-2">New players in <span class="font-bold">Unlimited</span> is after <span class="font-bold">each guess.</span></li>
-  </ol>
-</div>
+  
   
 
-<div class="game text-center p-2 position-relative top-50 flex flex-col">
-  <div class="daily-challenge text-center p-4">
-    <h2 class="text-2xl font-bold text-white mb-2">Unlimited</h2>
+
+  <div class="game text-center mt-0 p-2 position-relative top-50 flex flex-col">
+    <div class="daily-challenge text-center p-4">
+      <h2 class="text-2xl font-bold text-white mb-2">Unlimited</h2>
   </div>
     <div class="d-flex flex-column align-items-center">
         <input type="text" id="searchBar" class="form-control w-25 mb-8 m-3 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
@@ -264,21 +244,33 @@
 </script>
 
 <script>
+
 function helpSection() {
   const helpSection = document.getElementById('helpSection');
-  
-  if (helpSection.classList.contains('hidden')) {
-    helpSection.classList.remove('hidden');
-    helpSection.classList.remove('hide');
-    helpSection.classList.add('reveal');
-  } else {
+  const gameSection = document.querySelector('.game');
+
+  if (helpSection.classList.contains('reveal')) {
     helpSection.classList.remove('reveal');
-    helpSection.classList.add('hide');
     setTimeout(() => {
-      helpSection.classList.add('hidden');
-    }, 500); // Čas musí odpovídat délce animace hide
+      helpSection.style.maxHeight = '0';
+      helpSection.style.opacity = '0';
+      helpSection.style.padding = '0'; // Remove padding after animation
+    }, 500); // Čas musí odpovídat délce animace
+  } else {
+    helpSection.style.maxHeight = '500px'; // Adjust this value based on the actual content height
+    helpSection.style.opacity = '1';
+    helpSection.style.padding = '24px'; // Add padding before opening
+    helpSection.classList.add('reveal');
   }
 }
+
+
+
+
+
+
+
+
   
   let idUser;
   
