@@ -12,109 +12,124 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const menuButton = document.querySelector('[aria-controls="mobile-menu"]');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuButton.addEventListener('click', function () {
+          const expanded = menuButton.getAttribute('aria-expanded') === 'true' || false;
+          menuButton.setAttribute('aria-expanded', !expanded);
+          mobileMenu.classList.toggle('hidden');
+        });
+  
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+  
+        userMenuButton.addEventListener('click', function () {
+          userMenu.classList.toggle('hidden');
+        });
+  
+        document.addEventListener('click', function(event) {
+          if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+            userMenu.classList.add('hidden');
+          }
+        });
+      });
+    </script>
     <style>
         #logout{
           transform: rotate(-90deg);
         }
-        @keyframes revealFromTop {
-      0% {
-        opacity: 0;
-        max-height: 0;
-      }
-      100% {
-        opacity: 1;
-        max-height: 500px; /* Adjust based on content size */
-      }
-    }
+        #helpSection {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.5s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out;
+          opacity: 0;
+          padding: 0; /* No padding when closed */
+        }
 
-    @keyframes hideToTop {
-      0% {
-        opacity: 1;
-        max-height: 500px; /* Adjust based on content size */
-      }
-      100% {
-        opacity: 0;
-        max-height: 0;
-      }
-    }
-
-    .reveal {
-      animation: revealFromTop 0.5s forwards;
-    }
-
-    .hide {
-      animation: hideToTop 0.5s forwards;
-    }
-    #helpSectionContainer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease-out;
-    }
-
-    #helpSectionContainer.reveal {
-      max-height: 500px; /* Adjust this value based on the actual content height */
-    }
+        #helpSection.reveal {
+          max-height: 500px; /* Adjust this value based on the actual content height */
+          opacity: 1;
+          padding: 24px; /* Adjust the padding value to match the p-6 class */
+        }
       </style>
     </head>
 <body class="bg-gray-900">
     <div class="min-h-screen bg-gray-900 text-white">
-        <nav class="flex justify-between items-center p-4 border-b border-gray-800 sticky top-0 bg-gray-900">
-            <div class="flex items-center">
-                <a href="daily.html" class="flex items-center hover:text-green-500">
-                    <img src="logo3.png" alt="NBA Logo" class="h-8 mr-2"> 
-                    <span class="text-xl font-semibold">
-                      NBA Guessing Game<sub class="text-xs ml-1">Daily</sub>
-                    </span>
-                  </a>
-                  <a href="rapid.html" class="ml-3 hover:text-green-500">
-                    <button class="p-2">
-                      <span class="text-xs font-semibold">Rapid Fire</span>
-                    </button>
-                  </a>
-              <a href="index.html" class="ml-3 hover:text-green-500">
-                <button class="p-2">
-                  <span class="text-xs font-semibold">Unlimited</span>
-                </button>
-              </a>
-            </div>
-            <div class="flex items-center">
-              <button onclick="helpSection()" id="helpBtn" class="flex items-center p-2 ml-4 text-sm font-medium hover:text-blue-500">
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.89" height="21"> 
-                    <g> 
-                        <rect height="21" opacity="0" width="12.89" x="0" y="0"/> 
-                        <path d="M5.713 15.375C6.379 15.375 6.719 14.933 6.719 14.425C6.719 14.256 6.719 14.088 6.719 13.947C6.738 12.827 7.297 12.112 9.237 10.767C11.343 9.31 12.711 7.782 12.711 5.576C12.711 2.142 9.75 0.085 6.234 0.085C3.552 0.085 1.255 1.428 0.32 3.726C0.091 4.266 0 4.773 0 5.182C0 5.749 0.33 6.143 0.927 6.143C1.44 6.143 1.774 5.841 1.919 5.338C2.468 3.493 4.078 2.551 6.114 2.551C8.588 2.551 10.492 4.02 10.492 5.976C10.492 7.253 9.484 8.267 7.918 9.457C5.975 10.83 4.747 12.14 4.747 14.2C4.747 14.493 4.747 14.775 4.747 15.068C4.747 15.575 5.064 15.375 5.713 15.375ZM5.719 21C6.545 21 7.196 20.278 7.196 19.352C7.196 18.424 6.545 17.723 5.719 17.723C4.793 17.723 4.072 18.424 4.072 19.352C4.072 20.278 4.793 21 5.719 21Z" fill="currentColor" fill-opacity="0.85"/> 
-                    </g> 
+      <nav class="bg-gray-800">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div class="relative flex h-16 items-center justify-between">
+            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+              <!-- Mobile menu button-->
+              <button type="button" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
-                <span class="text-xs font-semibold ml-2">Help</span>
-            </button>
-              <button class="p-2">
-                <a href="profile2.html" class="flex items-center hover:text-green-500">
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17.4219" height="18.0957"> 
-                    <g> 
-                        <rect height="18.0957" opacity="0" width="17.4219" x="0" y="0"/> 
-                        <path d="M2.39258 18.0859L14.668 18.0859C16.2891 18.0859 17.0605 17.5977 17.0605 16.5234C17.0605 13.9648 13.8281 10.2637 8.53516 10.2637C3.23242 10.2637 0 13.9648 0 16.5234C0 17.5977 0.771484 18.0859 2.39258 18.0859ZM1.93359 16.6113C1.67969 16.6113 1.57227 16.543 1.57227 16.3379C1.57227 14.7266 4.05273 11.7383 8.53516 11.7383C13.0078 11.7383 15.4883 14.7266 15.4883 16.3379C15.4883 16.543 15.3906 16.6113 15.1367 16.6113ZM8.53516 9.04297C10.8594 9.04297 12.7539 6.98242 12.7539 4.46289C12.7539 1.96289 10.8691 0 8.53516 0C6.2207 0 4.31641 2.00195 4.31641 4.48242C4.31641 6.99219 6.21094 9.04297 8.53516 9.04297ZM8.53516 7.56836C7.10938 7.56836 5.88867 6.21094 5.88867 4.48242C5.88867 2.7832 7.08984 1.47461 8.53516 1.47461C9.99023 1.47461 11.1816 2.75391 11.1816 4.46289C11.1816 6.19141 9.9707 7.56836 8.53516 7.56836Z" fill="currentColor" fill-opacity="0.85"/>
-                    </g> 
-                 </svg>
-                  <span class="text-xs font-semibold ml-2" id="user-info"></span>
-                </a>
+                <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-              <a href="/logout" class="flex items-center ml-4 text-sm font-medium hover:text-red-500">
-                <svg id="logout" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17.6953" height="26.4746"> 
-                  <g> 
-                      <rect height="26.4746" opacity="0" width="17.6953" x="0" y="0"/> 
-                      <path d="M17.334 10.7617L17.334 20.5078C17.334 22.5195 16.3086 23.5352 14.2676 23.5352L3.06641 23.5352C1.02539 23.5352 0 22.5195 0 20.5078L0 10.7617C0 8.75 1.02539 7.73438 3.06641 7.73438L6.00586 7.73438L6.00586 9.30664L3.08594 9.30664C2.10938 9.30664 1.57227 9.83398 1.57227 10.8496L1.57227 20.4199C1.57227 21.4355 2.10938 21.9629 3.08594 21.9629L14.2383 21.9629C15.2051 21.9629 15.7617 21.4355 15.7617 20.4199L15.7617 10.8496C15.7617 9.83398 15.2051 9.30664 14.2383 9.30664L11.3281 9.30664L11.3281 7.73438L14.2676 7.73438C16.3086 7.73438 17.334 8.75 17.334 10.7617Z" fill="currentColor" fill-opacity="0.85"/> 
-                      <path d="M8.66211 15.8887C9.08203 15.8887 9.44336 15.5371 9.44336 15.127L9.44336 5.09766L9.38477 3.63281L10.0391 4.32617L11.5234 5.9082C11.6602 6.06445 11.8555 6.14258 12.0508 6.14258C12.4512 6.14258 12.7637 5.84961 12.7637 5.44922C12.7637 5.24414 12.6758 5.08789 12.5293 4.94141L9.22852 1.75781C9.0332 1.5625 8.86719 1.49414 8.66211 1.49414C8.4668 1.49414 8.30078 1.5625 8.0957 1.75781L4.79492 4.94141C4.64844 5.08789 4.57031 5.24414 4.57031 5.44922C4.57031 5.84961 4.86328 6.14258 5.27344 6.14258C5.45898 6.14258 5.67383 6.06445 5.81055 5.9082L7.28516 4.32617L7.94922 3.63281L7.89062 5.09766L7.89062 15.127C7.89062 15.5371 8.24219 15.8887 8.66211 15.8887Z" fill="currentColor" fill-opacity="0.85"/> 
-                  </g> 
-                </svg>
-                <span class="ml-2">Logout</span>
-              </a>
             </div>
-          </nav>
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <a href="daily.html" class="flex items-center  hover:text-green-500">
+                <img src="logo3.png" alt="NBA Logo" class="h-8 w-auto"> 
+                <span class="text-xl font-semibold ">
+                  NBA Guessing Game<sub class="text-xs ml-1">Daily</sub>
+                </span>
+              </a>
+              <div class="hidden sm:ml-6 sm:block">
+                <div class="flex space-x-4">
+                  <a href="rapid.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Rapid Fire</a>
+                  <a href="index.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Unlimited</a>
+                </div>
+              </div>
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <button onclick="helpSection()" id="helpBtn" class="relative bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none  hidden sm:block">
+                <span class="sr-only">Help</span>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.89" height="21"> 
+                  <g> 
+                      <rect height="21" opacity="0" width="12.89" x="0" y="0"/> 
+                      <path d="M5.713 15.375C6.379 15.375 6.719 14.933 6.719 14.425C6.719 14.256 6.719 14.088 6.719 13.947C6.738 12.827 7.297 12.112 9.237 10.767C11.343 9.31 12.711 7.782 12.711 5.576C12.711 2.142 9.75 0.085 6.234 0.085C3.552 0.085 1.255 1.428 0.32 3.726C0.091 4.266 0 4.773 0 5.182C0 5.749 0.33 6.143 0.927 6.143C1.44 6.143 1.774 5.841 1.919 5.338C2.468 3.493 4.078 2.551 6.114 2.551C8.588 2.551 10.492 4.02 10.492 5.976C10.492 7.253 9.484 8.267 7.918 9.457C5.975 10.83 4.747 12.14 4.747 14.2C4.747 14.493 4.747 14.775 4.747 15.068C4.747 15.575 5.064 15.375 5.713 15.375ZM5.719 21C6.545 21 7.196 20.278 7.196 19.352C7.196 18.424 6.545 17.723 5.719 17.723C4.793 17.723 4.072 18.424 4.072 19.352C4.072 20.278 4.793 21 5.719 21Z" fill="currentColor" fill-opacity="0.85"/> 
+                  </g> 
+              </svg>
+              </button>
+        
+              <div class="relative ml-3 hidden sm:block">
+                <div>
+                  <button type="button" class="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                    <span class="sr-only">Open user menu</span>
+                    <img class="h-8 w-8 rounded-full" id="profilePic" alt="">
+                  </button>
+                </div>
+                <div class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" id="user-menu" tabindex="-1">
+                  <a href="profile2.html" class="block px-4 py-2 text-sm text-gray-700 profileName" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                  <a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="hidden sm:hidden" id="mobile-menu">
+          <div class="space-y-1 px-2 pb-3 pt-2">
+            <a href="rapid.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Rapid Fire</a>
+            <a href="index.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Unlimited</a>
+            <button onclick="helpSection()" id="helpBtn" class="w-full text-left text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Help</button>
+            <a href="profile2.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium profileName">Your Profile</a>
+            <a href="/logout" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Sign out</a>
+          </div>
+        </div>
+      </nav>
 
-          <div id="helpSection" class="hidden bg-gray-800 p-6 text-white mt-4 mx-auto max-w-2xl border border-gray-700 rounded-lg">
-            <div class="flex justify-between items-center mb-4">
+          <div id="helpSection" class="bg-gray-800  mt-1 mb-0 text-white mx-auto max-w-2xl border border-gray-700 rounded-lg">
+            <div class="flex justify-between items-center mb-0">
               <h2 class="text-3xl font-bold">How to Play</h2>
-              <button onclick="helpSection()" id="helpBtn2" class="text-white text-xl leading-none hover:text-red-500">&times;</button>
+              <button onclick="helpSection()" id="helpBtn2" type="button" class="text-white text-xl leading-none hover:text-red-500">&times;</button>
             </div>
             <hr class="border-t border-gray-500 mb-4">
             <ol class="list-decimal ml-6">
@@ -126,7 +141,7 @@
                   <li class="mb-1"><span class="italic">Height or number</span> is off by at most 2.</li>
                 </ul>
               </li>
-              <li class="mb-2">New players are released <span class="font-bold">every day at midnight! (CET)</span></li>
+              <li class="mb-2">New players in <span class="font-bold">Unlimited</span> is after <span class="font-bold">each guess.</span></li>
             </ol>
           </div>
 
@@ -140,7 +155,7 @@
         
           <div class="game text-center p-2 position-relative top-50 flex flex-col">
             <div class="d-flex flex-column align-items-center">
-                <input type="text" id="searchBar" class="form-control w-25 mb-8 m-3 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
+                <input type="text" id="searchBar" class="form-control w-full mb-8 m-3 top-1/4 sm:w-1/4" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
                 <ul id="suggestions" class="form-control w-25 m-2 position-absolute" style="top: 46%; z-index: 100; border: none;"></ul>
                 <button id="guessBtn" class="btn btn-success w-min" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
                 <div class="flex justify-center" id="popupBtn">
@@ -225,17 +240,20 @@
     <script>
       function helpSection() {
         const helpSection = document.getElementById('helpSection');
-        
-        if (helpSection.classList.contains('hidden')) {
-          helpSection.classList.remove('hidden');
-          helpSection.classList.remove('hide');
-          helpSection.classList.add('reveal');
-        } else {
+        const gameSection = document.querySelector('.game');
+
+        if (helpSection.classList.contains('reveal')) {
           helpSection.classList.remove('reveal');
-          helpSection.classList.add('hide');
           setTimeout(() => {
-            helpSection.classList.add('hidden');
-          }, 500); // Čas musí odpovídat délce animace hide
+            helpSection.style.maxHeight = '0';
+            helpSection.style.opacity = '0';
+            helpSection.style.padding = '0'; // Remove padding after animation
+          }, 500); // Čas musí odpovídat délce animace
+        } else {
+          helpSection.style.maxHeight = '500px'; // Adjust this value based on the actual content height
+          helpSection.style.opacity = '1';
+          helpSection.style.padding = '24px'; // Add padding before opening
+          helpSection.classList.add('reveal');
         }
       }
 
@@ -258,13 +276,32 @@
                 console.log('User Info:', data);
                 idUser = data.id;
         
-                document.getElementById('user-info').textContent = `${data.username}`;
-        
-                setInterval(checkUser, 300000);
+                  const elements = document.querySelectorAll('.profileName');
+            elements.forEach(name => {
+              name.innerHTML = data.username;
+            });
+    
+            setInterval(checkUser, 300000);
+
+            fetch(`/profile-picture?userId=${idUser}`)
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const profilePhoto = document.getElementById('profilePic');
+                profilePhoto.src = url;
             })
             .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
+                console.error('Error:', error);
             });
+              })
+              .catch(error => {
+                  console.error('There has been a problem with your fetch operation:', error);
+              });
         }
         
         function checkUser() {

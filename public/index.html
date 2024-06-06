@@ -91,22 +91,25 @@
           </div>
         </div>
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-          <button onclick="helpSection()" id="helpBtn" class="relative bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 hidden sm:block">
+          <button onclick="helpSection()" id="helpBtn" class="relative bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none  hidden sm:block">
             <span class="sr-only">Help</span>
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5.713 15.375C6.379 15.375 6.719 14.933 6.719 14.425C6.719 14.256 6.719 14.088 6.719 13.947C6.738 12.827 7.297 12.112 9.237 10.767C11.343 9.31 12.711 7.782 12.711 5.576C12.711 2.142 9.75 0.085 6.234 0.085C3.552 0.085 1.255 1.428 0.32 3.726C0.091 4.266 0 4.773 0 5.182C0 5.749 0.33 6.143 0.927 6.143C1.44 6.143 1.774 5.841 1.919 5.338C2.468 3.493 4.078 2.551 6.114 2.551C8.588 2.551 10.492 4.02 10.492 5.976C10.492 7.253 9.484 8.267 7.918 9.457C5.975 10.83 4.747 12.14 4.747 14.2C4.747 14.493 4.747 14.775 4.747 15.068C4.747 15.575 5.064 15.375 5.713 15.375ZM5.719 21C6.545 21 7.196 20.278 7.196 19.352C7.196 18.424 6.545 17.723 5.719 17.723C4.793 17.723 4.072 18.424 4.072 19.352C4.072 20.278 4.793 21 5.719 21Z" />
-            </svg>
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.89" height="21"> 
+              <g> 
+                  <rect height="21" opacity="0" width="12.89" x="0" y="0"/> 
+                  <path d="M5.713 15.375C6.379 15.375 6.719 14.933 6.719 14.425C6.719 14.256 6.719 14.088 6.719 13.947C6.738 12.827 7.297 12.112 9.237 10.767C11.343 9.31 12.711 7.782 12.711 5.576C12.711 2.142 9.75 0.085 6.234 0.085C3.552 0.085 1.255 1.428 0.32 3.726C0.091 4.266 0 4.773 0 5.182C0 5.749 0.33 6.143 0.927 6.143C1.44 6.143 1.774 5.841 1.919 5.338C2.468 3.493 4.078 2.551 6.114 2.551C8.588 2.551 10.492 4.02 10.492 5.976C10.492 7.253 9.484 8.267 7.918 9.457C5.975 10.83 4.747 12.14 4.747 14.2C4.747 14.493 4.747 14.775 4.747 15.068C4.747 15.575 5.064 15.375 5.713 15.375ZM5.719 21C6.545 21 7.196 20.278 7.196 19.352C7.196 18.424 6.545 17.723 5.719 17.723C4.793 17.723 4.072 18.424 4.072 19.352C4.072 20.278 4.793 21 5.719 21Z" fill="currentColor" fill-opacity="0.85"/> 
+              </g> 
+          </svg>
           </button>
     
           <div class="relative ml-3 hidden sm:block">
             <div>
               <button type="button" class="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                 <span class="sr-only">Open user menu</span>
-                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                <img class="h-8 w-8 rounded-full" id="profilePic" alt="">
               </button>
             </div>
             <div class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" id="user-menu" tabindex="-1">
-              <a href="profile2.html" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+              <a href="profile2.html" class="block px-4 py-2 text-sm text-gray-700 profileName" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
               <a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
             </div>
           </div>
@@ -120,7 +123,7 @@
         <a href="daily.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Daily</a>
         <a href="rapid.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Rapid Fire</a>
         <button onclick="helpSection()" id="helpBtn" class="w-full text-left text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Help</button>
-        <a href="profile2.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Your Profile</a>
+        <a href="profile2.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium profileName">Your Profile</a>
         <a href="/logout" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Sign out</a>
       </div>
     </div>
@@ -149,24 +152,24 @@
   
 
 
-  <div class="game text-center mt-0 p-2 position-relative top-50 flex flex-col">
+  <div class="game text-center mt-0 p-2 relative top-1/2 flex flex-col">
     <div class="daily-challenge text-center p-4">
-      <h2 class="text-2xl font-bold text-white mb-2">Unlimited</h2>
-  </div>
-    <div class="d-flex flex-column align-items-center">
-        <input type="text" id="searchBar" class="form-control w-25 mb-8 m-3 top-25" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
-        <ul id="suggestions" class="form-control w-25 m-2 position-absolute" style="top: 67%; z-index: 100; border: none;"></ul>
+        <h2 class="text-2xl font-bold text-white mb-2">Unlimited</h2>
+    </div>
+    <div class="flex flex-col items-center">
+        <input type="text" id="searchBar" class="form-control w-full mb-8 m-3 top-1/4 sm:w-1/4" placeholder="Guess 1 of 8" aria-describedby="addon-wrapping">
+        <ul id="suggestions" class="form-control w-full m-2 absolute md:w-1/4" style="top: 67%; z-index: 100; border: none;"></ul>
         <button id="guessBtn" class="btn btn-success w-min" onclick="fetchSinglePlayer(searchBar.value)">Submit</button>
         <div class="flex justify-center" id="popupBtn">
-          <button onclick="togglePopup()" class="btn btn-success">
-            View result
-          </button>
+            <button onclick="togglePopup()" class="btn btn-success">
+                View result
+            </button>
         </div>
     </div>
-    <div class="guesses">
-      
-    </div>
+    <div class="guesses"></div>
 </div>
+
+
 
 <!-- <div id="login"></div> -->
 
@@ -320,9 +323,28 @@ function helpSection() {
           console.log('User Info:', data);
           idUser = data.id;
   
-          document.getElementById('user-info').textContent = `${data.username}`;
+          const elements = document.querySelectorAll('.profileName');
+          elements.forEach(name => {
+            name.innerHTML = data.username;
+          });
   
           setInterval(checkUser, 300000);
+
+          fetch(`/profile-picture?userId=${idUser}`)
+          .then(response => {
+              if (response.ok) {
+                  return response.blob();
+              }
+              throw new Error('Network response was not ok.');
+          })
+          .then(blob => {
+              const url = URL.createObjectURL(blob);
+              const profilePhoto = document.getElementById('profilePic');
+              profilePhoto.src = url;
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
       })
       .catch(error => {
           console.error('There has been a problem with your fetch operation:', error);
