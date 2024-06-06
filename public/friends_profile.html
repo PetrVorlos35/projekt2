@@ -92,102 +92,96 @@
     </div>
 </nav>
 
-  <div class="flex flex-col md:flex-row w-full md:w-3/4 m-auto">
+<div class="flex flex-col md:flex-row w-full md:w-3/4 lg:w-2/3 xl:w-1/2 m-auto p-4">
 
-    <div class="flex-1 p-8">
-      <div class="mb-4">
-        <a href="friends.html" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
-            <svg class="mr-2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22.3047" height="17.9199"> 
-                <g>
-                <rect height="17.9199" opacity="0" width="22.3047" x="0" y="0"/>
-                <path d="M9.54102 17.9102C10.2051 17.9102 10.6836 17.4219 10.6836 16.7676L10.6836 13.0371L10.9668 13.0371C14.7559 13.0371 17.1387 13.9941 18.8477 17.1875C19.1895 17.8125 19.6387 17.9102 20.0488 17.9102C20.5664 17.9102 21.0547 17.4414 21.0547 16.6016C21.0547 9.38477 17.998 4.88281 10.9668 4.88281L10.6836 4.88281L10.6836 1.19141C10.6836 0.537109 10.2051 0 9.52148 0C9.04297 0 8.7207 0.205078 8.20312 0.693359L0.498047 7.90039C0.117188 8.26172 0 8.62305 0 8.95508C0 9.27734 0.126953 9.64844 0.498047 10L8.20312 17.2754C8.67188 17.7148 9.0625 17.9102 9.54102 17.9102ZM8.98438 15.8105C8.92578 15.8105 8.86719 15.7812 8.81836 15.7227L1.85547 9.14062C1.77734 9.0625 1.74805 9.01367 1.74805 8.95508C1.74805 8.89648 1.77734 8.83789 1.85547 8.76953L8.80859 2.09961C8.85742 2.06055 8.91602 2.02148 8.97461 2.02148C9.0625 2.02148 9.11133 2.08008 9.11133 2.1582L9.11133 6.03516C9.11133 6.25977 9.21875 6.35742 9.44336 6.35742L10.752 6.35742C17.4512 6.35742 19.4727 11.0059 19.668 15.6152C19.668 15.6934 19.6387 15.7227 19.5898 15.7227C19.5508 15.7227 19.5312 15.6934 19.502 15.625C18.3496 13.1738 15.3906 11.5625 10.752 11.5625L9.44336 11.5625C9.21875 11.5625 9.11133 11.6602 9.11133 11.8848L9.11133 15.6641C9.11133 15.752 9.0625 15.8105 8.98438 15.8105Z" fill="currentColor" fill-opacity="0.85"/> 
-                </g> 
-            </svg>
-          Back to Friends
-        </a>
-      </div>
-
-      <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
-        <h2 class="text-2xl font-bold mb-4 ">Personal Information</h2>
-        <div class="profile-photo-container flex flex-col items-center justify-center">
-          <label for="profile_photo" class="w-20 h-20 border-2 border-transparent rounded-full overflow-hidden bg-gray-700 flex justify-center items-center">
-              <img id="profile_photo_preview"  alt="User Avatar" class="object-cover rounded-full w-full h-full">
-          </label>
-      </div>
-        <div class="mb-4">
-          <label class="inline">Name:</label>
-          <div class="user-name inline"></div>
-        </div>
-        <div class="mb-4">
-          <label class="inline">Email:</label>
-          <div class="inline email"></div>
-        </div>
-      </div>
-
-      <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
-        <h2 class="text-2xl font-bold mb-4 text-center">Unlimited Statistics</h2> 
-        <div class="grid gap-4 grid-cols-2">
-          <div>Games played:</div>
-          <div id="games">0</div> 
-          
-          <div>Longest streak:</div>
-          <div id="streakL">0</div> 
-
-          <div>Current streak:</div>
-          <div id="streakC">0</div> 
-
-          <div>Win percentage:</div>
-          <div id="win">0%</div> 
-        </div>
-      </div>
-
-      <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
-        <h2 class="text-2xl font-bold mb-4 text-center">Daily Statistics</h2> 
-        <div class="grid gap-4 grid-cols-2">
-          <div>Games played:</div>
-          <div id="gamesDaily">0</div> 
-          
-          <div>Longest streak:</div>
-          <div id="streakLDaily">0</div> 
-
-          <div>Current streak:</div>
-          <div id="streakCDaily">0</div> 
-
-          <div>Win percentage:</div>
-          <div id="winDaily">0%</div> 
-        </div>
-      </div>
-
-      <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
-        <h2 class="text-2xl font-bold mb-4 text-center">Rapid Fire Statistics</h2> 
-        <div class="grid gap-4 grid-cols-2">
-            <div>Games Played:</div>
-            <div id="gamesPlayed">0</div> 
-            
-            <div>Total score:</div>
-            <div id="correctGuesses">0</div> 
-    
-            <div>Best score:</div>
-            <div id="maxCorrectGuesses">0</div> 
-    
-            <div>Average score:</div>
-            <div id="avgCorrectGuesses">0</div> 
-        </div>
+  <!-- Profile Info Section -->
+  <div class="flex-1 p-4 md:p-8">
+    <div class="mb-4">
+      <a href="friends.html" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+        <svg class="mr-2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22.3047" height="17.9199"> 
+          <g>
+          <rect height="17.9199" opacity="0" width="22.3047" x="0" y="0"/>
+          <path d="M9.54102 17.9102C10.2051 17.9102 10.6836 17.4219 10.6836 16.7676L10.6836 13.0371L10.9668 13.0371C14.7559 13.0371 17.1387 13.9941 18.8477 17.1875C19.1895 17.8125 19.6387 17.9102 20.0488 17.9102C20.5664 17.9102 21.0547 17.4414 21.0547 16.6016C21.0547 9.38477 17.998 4.88281 10.9668 4.88281L10.6836 4.88281L10.6836 1.19141C10.6836 0.537109 10.2051 0 9.52148 0C9.04297 0 8.7207 0.205078 8.20312 0.693359L0.498047 7.90039C0.117188 8.26172 0 8.62305 0 8.95508C0 9.27734 0.126953 9.64844 0.498047 10L8.20312 17.2754C8.67188 17.7148 9.0625 17.9102 9.54102 17.9102ZM8.98438 15.8105C8.92578 15.8105 8.86719 15.7812 8.81836 15.7227L1.85547 9.14062C1.77734 9.0625 1.74805 9.01367 1.74805 8.95508C1.74805 8.89648 1.77734 8.83789 1.85547 8.76953L8.80859 2.09961C8.85742 2.06055 8.91602 2.02148 8.97461 2.02148C9.0625 2.02148 9.11133 2.08008 9.11133 2.1582L9.11133 6.03516C9.11133 6.25977 9.21875 6.35742 9.44336 6.35742L10.752 6.35742C17.4512 6.35742 19.4727 11.0059 19.668 15.6152C19.668 15.6934 19.6387 15.7227 19.5898 15.7227C19.5508 15.7227 19.5312 15.6934 19.502 15.625C18.3496 13.1738 15.3906 11.5625 10.752 11.5625L9.44336 11.5625C9.21875 11.5625 9.11133 11.6602 9.11133 11.8848L9.11133 15.6641C9.11133 15.752 9.0625 15.8105 8.98438 15.8105Z" fill="currentColor" fill-opacity="0.85"/> 
+          </g> 
+      </svg>
+        <span>Back to Friends</span>
+      </a>
     </div>
 
-      <div class="bg-gray-800 p-6 rounded-lg shadow-md mt-8 text-center">
-        <h2 class="text-2xl font-bold mb-4 text-white">Guess distribution for Unlimited</h2>
-        <div class="grid gap-4">
-          <div class="w-full flex justify-center">
-            <canvas id="myChart" class="max-w-full"></canvas>
-          </div>
-        </div>
+    <!-- Personal Information Card -->
+    <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-md text-center">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl md:text-2xl font-bold">Personal Information</h2>
       </div>
+      <div class="profile-photo-container flex flex-col items-center justify-center mb-4">
+        <label id="changePic" for="profile_photo" class="w-16 h-16 md:w-20 md:h-20  rounded-full overflow-hidden bg-gray-700 flex justify-center items-center">
+          <img id="profile_photo_preview" alt="User Avatar" class="object-cover rounded-full w-full h-full">
+        </label>
+      </div>
+      <div class="mb-4">
+        <label class="inline">Name:</label>
+        <div class="user-name inline"></div>
+      </div>
+      <div class="mb-4">
+        <label class="inline">Email:</label>
+        <div class="inline email"></div>
+      </div>
+    </div>
 
+    <!-- Unlimited Statistics Card -->
+    <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-md mt-4 md:mt-8 text-center">
+      <h2 class="text-xl md:text-2xl font-bold mb-4">Unlimited Statistics</h2>
+      <div class="grid gap-4 grid-cols-2">
+        <div>Games played:</div>
+        <div id="games">0</div>
+        <div>Longest streak:</div>
+        <div id="streakL">0</div>
+        <div>Current streak:</div>
+        <div id="streakC">0</div>
+        <div>Win percentage:</div>
+        <div id="win">0%</div>
+      </div>
+    </div>
 
+    <!-- Daily Statistics Card -->
+    <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-md mt-4 md:mt-8 text-center">
+      <h2 class="text-xl md:text-2xl font-bold mb-4">Daily Statistics</h2>
+      <div class="grid gap-4 grid-cols-2">
+        <div>Games played:</div>
+        <div id="gamesDaily">0</div>
+        <div>Longest streak:</div>
+        <div id="streakLDaily">0</div>
+        <div>Current streak:</div>
+        <div id="streakCDaily">0</div>
+        <div>Win percentage:</div>
+        <div id="winDaily">0%</div>
+      </div>
+    </div>
 
+    <!-- Rapid Fire Statistics Card -->
+    <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-md mt-4 md:mt-8 text-center">
+      <h2 class="text-xl md:text-2xl font-bold mb-4">Rapid Fire Statistics</h2>
+      <div class="grid gap-4 grid-cols-2">
+        <div>Games Played:</div>
+        <div id="gamesPlayed">0</div>
+        <div>Total score:</div>
+        <div id="correctGuesses">0</div>
+        <div>Best score:</div>
+        <div id="maxCorrectGuesses">0</div>
+        <div>Average score:</div>
+        <div id="avgCorrectGuesses">0</div>
+      </div>
+    </div>
+
+    <!-- Guess Distribution Chart Card -->
+    <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-md mt-4 md:mt-8 text-center">
+      <h2 class="text-xl md:text-2xl font-bold mb-4">Guess distribution for Unlimited</h2>
+      <div class="flex justify-center">
+        <canvas id="myChart" class="max-w-full"></canvas>
+      </div>
     </div>
   </div>
+</div>
 
 </div>
 

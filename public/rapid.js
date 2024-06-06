@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     let timer;
-    let timeLeft = 30; // 2 minutes in seconds
+    let timeLeft = 120; // 2 minutes in seconds
     let guessedPlayers = [];
     let randomPlayerName, randomPlayerTeam, randomPlayerDivision, randomPlayerConference, randomPlayerPosition, randomPlayerHeight, randomPlayerNo;
 

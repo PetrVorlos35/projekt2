@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCountdown() {
         const now = new Date();
         const nextDay = new Date();
-        nextDay.setHours(10, 37, 0, 0); 
+        nextDay.setHours(24, 0, 0, 0); 
     
         if (now > nextDay) {
             nextDay.setDate(nextDay.getDate() + 1); 

@@ -54,77 +54,89 @@
           opacity: 1;
           padding: 24px; /* Adjust the padding value to match the p-6 class */
         }
+        .modal {
+            transition: opacity 0.25s ease;
+            }
+        body.modal-active {
+            overflow-x: hidden;
+            overflow-y: visible !important;
+        }
       </style>
 </head>
 <body class="bg-gray-900">
     <div class="min-h-screen bg-gray-900 text-white">
+
         <nav class="bg-gray-800">
-            <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-              <div class="relative flex h-16 items-center justify-between">
-                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                  <!-- Mobile menu button-->
-                  <button type="button" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 items-center justify-between">
+            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                <!-- Mobile menu button-->
+                <button type="button" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
                     <span class="sr-only">Open main menu</span>
                     <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                     <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                  </button>
-                </div>
-                <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                  <a href="rapid.html" class="flex items-center  hover:text-green-500">
-                    <img src="logo3.png" alt="NBA Logo" class="h-8 w-auto"> 
-                    <span class="text-xl font-semibold ">
-                      NBA Guessing Game<sub class="text-xs ml-1">Rapid Fire</sub>
+                </button>
+            </div>
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <a href="rapid.html" class="flex items-center hover:text-green-500">
+                    <img src="logo3.png" alt="NBA Logo" class="h-8 w-auto">
+                    <span class="text-xl font-semibold">
+                        NBA Guessing Game<sub class="text-xs ml-1">Rapid Fire</sub>
                     </span>
-                  </a>
-                  <div class="hidden sm:ml-6 sm:block">
+                </a>
+                <div class="hidden sm:ml-6 sm:block">
                     <div class="flex space-x-4">
-                      <a href="daily.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Daily</a>
-                      <a href="index.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Unlimited</a>
+                        <a href="daily.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Daily</a>
+                        <a href="index.html" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Unlimited</a>
+                        <a href="#" id="leaderboardLink" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Show Leaderboard</a>
                     </div>
-                  </div>
                 </div>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                  <button onclick="helpSection()" id="helpBtn" class="relative bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none  hidden sm:block">
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <button onclick="helpSection()" id="helpBtn" class="relative bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none hidden sm:block">
                     <span class="sr-only">Help</span>
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.89" height="21"> 
-                      <g> 
-                          <rect height="21" opacity="0" width="12.89" x="0" y="0"/> 
-                          <path d="M5.713 15.375C6.379 15.375 6.719 14.933 6.719 14.425C6.719 14.256 6.719 14.088 6.719 13.947C6.738 12.827 7.297 12.112 9.237 10.767C11.343 9.31 12.711 7.782 12.711 5.576C12.711 2.142 9.75 0.085 6.234 0.085C3.552 0.085 1.255 1.428 0.32 3.726C0.091 4.266 0 4.773 0 5.182C0 5.749 0.33 6.143 0.927 6.143C1.44 6.143 1.774 5.841 1.919 5.338C2.468 3.493 4.078 2.551 6.114 2.551C8.588 2.551 10.492 4.02 10.492 5.976C10.492 7.253 9.484 8.267 7.918 9.457C5.975 10.83 4.747 12.14 4.747 14.2C4.747 14.493 4.747 14.775 4.747 15.068C4.747 15.575 5.064 15.375 5.713 15.375ZM5.719 21C6.545 21 7.196 20.278 7.196 19.352C7.196 18.424 6.545 17.723 5.719 17.723C4.793 17.723 4.072 18.424 4.072 19.352C4.072 20.278 4.793 21 5.719 21Z" fill="currentColor" fill-opacity="0.85"/> 
-                      </g> 
-                  </svg>
-                  </button>
-            
-                  <div class="relative ml-3 hidden sm:block">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="12.89" height="21">
+                        <g>
+                            <rect height="21" opacity="0" width="12.89" x="0" y="0" />
+                            <path d="M5.713 15.375C6.379 15.375 6.719 14.933 6.719 14.425C6.719 14.256 6.719 14.088 6.719 13.947C6.738 12.827 7.297 12.112 9.237 10.767C11.343 9.31 12.711 7.782 12.711 5.576C12.711 2.142 9.75 0.085 6.234 0.085C3.552 0.085 1.255 1.428 0.32 3.726C0.091 4.266 0 4.773 0 5.182C0 5.749 0.33 6.143 0.927 6.143C1.44 6.143 1.774 5.841 1.919 5.338C2.468 3.493 4.078 2.551 6.114 2.551C8.588 2.551 10.492 4.02 10.492 5.976C10.492 7.253 9.484 8.267 7.918 9.457C5.975 10.83 4.747 12.14 4.747 14.2C4.747 14.493 4.747 14.775 4.747 15.068C4.747 15.575 5.064 15.375 5.713 15.375ZM5.719 21C6.545 21 7.196 20.278 7.196 19.352C7.196 18.424 6.545 17.723 5.719 17.723C4.793 17.723 4.072 18.424 4.072 19.352C4.072 20.278 4.793 21 5.719 21Z" fill="currentColor" fill-opacity="0.85" />
+                        </g>
+                    </svg>
+                </button>
+                
+                <div class="relative ml-3 hidden sm:block">
                     <div>
-                      <button type="button" class="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                        <span class="sr-only">Open user menu</span>
-                        <img class="h-8 w-8 rounded-full" id="profilePic" alt="">
-                      </button>
+                        <button type="button" class="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                            <span class="sr-only">Open user menu</span>
+                            <img class="h-8 w-8 rounded-full" id="profilePic" alt="">
+                        </button>
                     </div>
                     <div class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" id="user-menu" tabindex="-1">
-                      <a href="profile2.html" class="block px-4 py-2 text-sm text-gray-700 profileName" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-                      <a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                        <a href="profile2.html" class="block px-4 py-2 text-sm text-gray-700 profileName" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                        <a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          
-            <!-- Mobile menu, show/hide based on menu state. -->
-            <div class="hidden sm:hidden" id="mobile-menu">
-              <div class="space-y-1 px-2 pb-3 pt-2">
-                <a href="daily.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Daily</a>
-                <a href="index.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Unlimited</a>
-                <button onclick="helpSection()" id="helpBtn" class="w-full text-left text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Help</button>
-                <a href="profile2.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium profileName">Your Profile</a>
-                <a href="/logout" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Sign out</a>
-              </div>
-            </div>
-          </nav>
+        </div>
+    </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="hidden sm:hidden" id="mobile-menu">
+        <div class="space-y-1 px-2 pb-3 pt-2">
+            <a href="daily.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Daily</a>
+            <a href="index.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Unlimited</a>
+            <button onclick="helpSection()" id="helpBtn" class="w-full text-left text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Help</button>
+            <a href="profile2.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium profileName">Your Profile</a>
+            <a href="/logout" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Sign out</a>
+            <a href="#" id="leaderboardLinkMobile" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Show Leaderboard</a>
+        </div>
+    </div>
+</nav>
+
+        
 
           <div id="helpSection" class="bg-gray-800  mt-1 mb-0 text-white mx-auto max-w-2xl border border-gray-700 rounded-lg">
             <div class="flex justify-between items-center mb-0">
@@ -134,6 +146,7 @@
             <hr class="border-t border-gray-500 mb-4">
             <ol class="list-decimal ml-6">
               <li class="mb-2">Try to guess the player in <span class="font-bold">8 guesses</span>.</li>
+              <li class="mb-2">You have <span class="font-bold">2 minutes</span> to guess <span class="font-bold">as many players</span> right as possible</li>
               <li class="mb-2"><span class="text-green-500 font-bold">Green</span> is an exact match.</li>
               <li class="mb-2"><span class="text-yellow-500 font-bold">Yellow</span> is a close match. A close...
                 <ul class="list-disc ml-6">
@@ -141,7 +154,7 @@
                   <li class="mb-1"><span class="italic">Height or number</span> is off by at most 2.</li>
                 </ul>
               </li>
-              <li class="mb-2">New players in <span class="font-bold">Unlimited</span> is after <span class="font-bold">each guess.</span></li>
+              <li class="mb-2">New players in <span class="font-bold">Rapid Fire</span> are after <span class="font-bold">each guess.</span></li>
             </ol>
           </div>
 
@@ -196,38 +209,93 @@
             </div>
         </div>
 
-        <div class="p-6 rounded-lg shadow-md mt-8 text-center">
-          <h2 class="text-2xl font-bold mb-4 text-center">Leaderboard</h2> 
-          <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div class="inline-block min-w-20 sm:px-6 lg:px-8">
-                  <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-gray-50">
-                          <tr>
-                              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                  Rank
-                              </th>
-                              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                  Player Name
-                              </th>
-                              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                  Score
-                              </th>
-                              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                  Game Date
-                              </th>
-                          </tr>
-                      </thead>
-                      <tbody id="leaderboardData" class="bg-white text-black p-6 divide-y divide-gray-200">
-                          <!-- Leaderboard data will be dynamically inserted here -->
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-      </div>
+
+          <!-- Wrap your leaderboard div with a modal container -->
+<div class="fixed z-10 inset-0 overflow-y-auto hidden" id="leaderboardModal">
+    <div class="flex items-center justify-center min-h-screen text-center">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span class="hidden align-middle h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-middle bg-gray-800 text-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">Leaderboard</h3>
+                        <div class="mt-2">
+                            <!-- Your existing leaderboard content goes here -->
+                            <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div class="inline-block min-w-full sm:px-6 lg:px-8">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-700">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                                    Rank
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                                    Player Name
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                                    Score
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                                    Game Date
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="leaderboardData" class="bg-gray-800 text-white divide-y divide-gray-700">
+                                            <!-- Leaderboard data will be dynamically inserted here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button id="closeLeaderboard" type="button" class="btn btn-secondary text-gray-300 hover:bg-gray-600">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
           
     </div>
 
     <script src="rapid.js"></script>
+    <!-- Add this script at the end of your body -->
+<!-- Add this script at the end of your body -->
+<script>
+    const leaderboardLink = document.getElementById('leaderboardLink');
+    const leaderboardLinkMobile = document.getElementById('leaderboardLinkMobile');
+    const leaderboardModal = document.getElementById('leaderboardModal');
+    const closeLeaderboard = document.getElementById('closeLeaderboard');
+
+    leaderboardLink.addEventListener('click', () => {
+        leaderboardModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+    });
+
+    leaderboardLinkMobile.addEventListener('click', () => {
+        leaderboardModal.classList.remove('hidden');
+        document.body.classList.add('modal-active');
+    });
+
+    closeLeaderboard.addEventListener('click', () => {
+        leaderboardModal.classList.add('hidden');
+        document.body.classList.remove('modal-active');
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == leaderboardModal) {
+            leaderboardModal.classList.add('hidden');
+            document.body.classList.remove('modal-active');
+        }
+    });
+</script>
+
+
     <script>
 
         function helpSection() {

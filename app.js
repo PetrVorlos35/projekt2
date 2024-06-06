@@ -103,7 +103,7 @@ async function insertDailyPlayer() {
 }
 
 // Schedule a task to run every 24 hours
-cron.schedule('37 10 * * *', async () => {
+cron.schedule('0 12 * * *', async () => {
   await insertDailyPlayer();
 });
 
