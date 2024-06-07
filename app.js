@@ -371,7 +371,7 @@ app.get('/profile-picture', (req, res) => {
           res.set('Content-Type', 'image/jpeg');
           res.send(result[0].ProfilePicture);
       } else {
-          res.sendFile('/Users/petrvorel35/projekt2/public/defaultpfp.png', { headers: { 'Content-Type': 'image/png' } });
+          res.sendFile('./public/defaultpfp.png', { headers: { 'Content-Type': 'image/png' } });
       }
   });
 });
