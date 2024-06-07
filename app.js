@@ -8,6 +8,8 @@ const multer = require('multer');
 const jwtSecret = 'tajnyHeslo'; 
 const cron = require('node-cron');
 const axios = require('axios');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 require('dotenv').config();
 
 
@@ -253,16 +255,77 @@ app.get('/check-daily-guess', (req, res) => {
 
 
   
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url} - Body:`, req.body);
+  next();
+});
+
 app.post('/register', (req, res) => {
-    const { username, password, email } = req.body;
-  
-    const sql = 'INSERT INTO Uzivatele (Username, Heslo, Email) VALUES (?, ?, ?)';
-    db.query(sql, [username, password, email], (err, result) => {
-        if (err) throw err;
-        console.log('User registered successfully');
-        res.redirect('/index.html');
-    });
+  const { username, password, email } = req.body;
+
+  console.log('Received registration request:', { username, email });
+
+  if (!username || !password || !email) {
+    console.error('Missing required fields:', { username, password, email });
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  // Kontrola, zda uživatelské jméno nebo email již nejsou používány
+  const checkSql = 'SELECT Username, Email FROM Uzivatele WHERE Username = ? OR Email = ?';
+  db.query(checkSql, [username, email], (err, results) => {
+    if (err) {
+      console.error('Database error during check:', err);
+      return res.status(500).json({ message: 'Server error' });
+    }
+
+    if (results.length > 0) {
+      let errorMessage = '';
+      let field = '';
+
+      if (results[0].Username === username) {
+        errorMessage = 'Username is already in use';
+        field = 'username';
+      } else if (results[0].Email === email) {
+        errorMessage = 'Email is already in use';
+        field = 'email';
+      }
+
+      console.log('Validation error:', errorMessage);
+      return res.status(400).json({ message: errorMessage, field: field });
+    } else {
+      console.log('Proceeding to hash password');
+
+      // Hashování hesla před vložením uživatele do databáze
+      bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+        if (err) {
+          console.error('Error hashing password:', err);
+          return res.status(500).json({ message: 'Server error' });
+        }
+
+        console.log('Password hashed successfully:', hashedPassword);
+
+        // Vložení nového uživatele s hashovaným heslem
+        const insertSql = 'INSERT INTO Uzivatele (Username, Heslo, Email) VALUES (?, ?, ?)';
+        db.query(insertSql, [username, hashedPassword, email], (err, result) => {
+          if (err) {
+            console.error('Database error during insert:', err);
+            return res.status(500).json({ message: 'Server error' });
+          }
+
+          console.log('User registered successfully');
+          // Vrátíme JSON odpověď místo přesměrování
+          return res.status(200).json({ success: true, redirectUrl: '/login.html' });
+        });
+      });
+    }
   });
+});
+
+
+
+
+
+
 
   app.get('/saveStats', (req, res) => {
     const { userId, attempts, winLoss } = req.query;
@@ -386,18 +449,50 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
-  const sql = 'SELECT ID, Username, Email FROM Uzivatele WHERE Username = ? AND Heslo = ?';
-  db.query(sql, [username, password], (err, results) => {
+  const sql = 'SELECT ID, Username, Email, Heslo FROM Uzivatele WHERE Username = ?';
+  db.query(sql, [username], (err, results) => {
     if (err) {
       return res.status(500).json({ message: 'Internal server error' });
     }
 
     if (results.length > 0) {
       const user = results[0];
-      const token = jwt.sign({ id: user.ID, username: user.Username, email: user.Email }, jwtSecret, { expiresIn: '1h' });
+      const storedPassword = user.Heslo;
 
-      res.cookie('token', token, { httpOnly: true, secure: true });
-      res.status(200).json({ success: true });
+      // Funkce pro ověření hesla
+      const verifyPassword = (inputPassword, storedPassword) => {
+        // Zkusíme porovnat heslo jako hashované (bcrypt)
+        bcrypt.compare(inputPassword, storedPassword, (err, isMatch) => {
+          if (err) {
+            return res.status(500).json({ message: 'Internal server error' });
+          }
+
+          if (isMatch) {
+            // Generate JWT token
+            const token = jwt.sign({ id: user.ID, username: user.Username, email: user.Email }, jwtSecret, { expiresIn: '1h' });
+
+            // Set token as a cookie
+            res.cookie('token', token, { httpOnly: true, secure: true });
+            return res.status(200).json({ success: true });
+          } else {
+            // Pokud bcrypt neporovnal úspěšně, zkusíme přímé porovnání
+            if (inputPassword === storedPassword) {
+              // Vygenerujeme JWT token
+              const token = jwt.sign({ id: user.ID, username: user.Username, email: user.Email }, jwtSecret, { expiresIn: '1h' });
+
+              // Nastavení tokenu jako cookie
+              res.cookie('token', token, { httpOnly: true, secure: true });
+              return res.status(200).json({ success: true });
+            } else {
+              return res.status(401).json({ message: 'Incorrect Username and/or Password!' });
+            }
+          }
+        });
+      };
+
+      // Ověření hesla
+      verifyPassword(password, storedPassword);
+
     } else {
       res.status(401).json({ message: 'Incorrect Username and/or Password!' });
     }
