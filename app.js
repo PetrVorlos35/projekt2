@@ -255,10 +255,7 @@ app.get('/check-daily-guess', (req, res) => {
 
 
   
-app.use((req, res, next) => {
-  console.log(`Incoming request: ${req.method} ${req.url} - Body:`, req.body);
-  next();
-});
+
 
 app.post('/register', (req, res) => {
   const { username, password, email } = req.body;
