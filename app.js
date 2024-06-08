@@ -103,7 +103,6 @@ async function insertDailyPlayer() {
       });
   }
 }
-
 // Schedule a task to run every 24 hours
 cron.schedule('0 12 * * *', async () => {
   await insertDailyPlayer();
@@ -368,7 +367,7 @@ app.get('/profile-picture', (req, res) => {
           res.set('Content-Type', 'image/jpeg');
           res.send(result[0].ProfilePicture);
       } else {
-          res.sendFile('./public/defaultpfp.png', { headers: { 'Content-Type': 'image/png' } });
+          res.sendFile('/Users/petrvorel35/projekt2/public/defaultpfp.png', { headers: { 'Content-Type': 'image/png' } });
       }
   });
 });

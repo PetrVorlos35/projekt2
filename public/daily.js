@@ -152,8 +152,76 @@ async function fetchGuessedPlayers(guessedPlayers) {
             row.insertCell(4).innerHTML = player.position;
             row.insertCell(5).innerHTML = player.height;
             row.insertCell(6).innerHTML = player.jersey_number;
+
+            highlightComparison(player, row);
+
         }
     });
+}
+
+function highlightComparison(player, row) {
+    const fullName = player.first_name + ' ' + player.last_name;
+    if (fullName === window.randomPlayerName) {
+        row.cells[0].style.backgroundColor = 'green';
+        row.cells[0].style.color = 'white';
+    }
+    // Porovnání týmu
+    if (player.team.full_name === window.randomPlayerTeam) {
+        row.cells[1].style.backgroundColor = 'green';
+        row.cells[1].style.color = 'white';
+    }
+
+    // Porovnání konference
+    if (player.team.conference === window.randomPlayerConference) {
+        row.cells[2].style.backgroundColor = 'green';
+        row.cells[2].style.color = 'white';
+    }
+
+    // Porovnání divize
+    if (player.team.division === window.randomPlayerDivision) {
+        row.cells[3].style.backgroundColor = 'green';
+        row.cells[3].style.color = 'white';
+    }
+
+    // Porovnání pozice
+    if (window.randomPlayerPosition.includes(player.position) || player.position.includes(window.randomPlayerPosition)) {
+        row.cells[4].style.backgroundColor = 'orange';
+        row.cells[4].style.color = 'white';
+    }
+    if (window.randomPlayerPosition === player.position) {
+        row.cells[4].style.backgroundColor = 'green';
+        row.cells[4].style.color = 'white';
+    }
+
+    // Porovnání výšky
+    if (window.randomPlayerHeight === player.height) {
+        row.cells[5].style.backgroundColor = 'green';
+        row.cells[5].style.color = 'white';
+    } else {
+        let difference = Math.abs(player.height - window.randomPlayerHeight);
+        if (difference <= 2) {
+            row.cells[5].style.backgroundColor = 'orange';
+            row.cells[5].style.color = 'white';
+            row.cells[5].innerHTML += player.height < window.randomPlayerHeight ? '↑' : '↓';
+        } else {
+            row.cells[5].innerHTML += player.height < window.randomPlayerHeight ? '↑' : '↓';
+        }
+    }
+
+    // Porovnání čísla dresu
+    if (window.randomPlayerNo === player.jersey_number) {
+        row.cells[6].style.backgroundColor = 'green';
+        row.cells[6].style.color = 'white';
+    } else {
+        let difference = Math.abs(player.jersey_number - window.randomPlayerNo);
+        if (difference <= 2) {
+            row.cells[6].style.backgroundColor = 'orange';
+            row.cells[6].style.color = 'white';
+            row.cells[6].innerHTML += player.jersey_number < window.randomPlayerNo ? '↑' : '↓';
+        } else {
+            row.cells[6].innerHTML += player.jersey_number < window.randomPlayerNo ? '↑' : '↓';
+        }
+    }
 }
 
 
