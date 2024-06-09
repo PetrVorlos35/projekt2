@@ -198,13 +198,13 @@ function highlightComparison(player, row) {
         row.cells[5].style.backgroundColor = 'green';
         row.cells[5].style.color = 'white';
     } else {
-        let difference = Math.abs(player.height - window.randomPlayerHeight);
+        let difference = Math.abs(convertHeightToInches(player.height) - convertHeightToInches(window.randomPlayerHeight));
         if (difference <= 2) {
             row.cells[5].style.backgroundColor = 'orange';
             row.cells[5].style.color = 'white';
-            row.cells[5].innerHTML += player.height < window.randomPlayerHeight ? '↑' : '↓';
+            row.cells[5].innerHTML += convertHeightToInches(player.height) < convertHeightToInches(window.randomPlayerHeight) ? '↑' : '↓';
         } else {
-            row.cells[5].innerHTML += player.height < window.randomPlayerHeight ? '↑' : '↓';
+            row.cells[5].innerHTML += convertHeightToInches(player.height) < convertHeightToInches(window.randomPlayerHeight) ? '↑' : '↓';
         }
     }
 
@@ -380,6 +380,11 @@ playAgainBtn.hidden = true;
 const popupBtn = document.getElementById('popupBtn');
 popupBtn.hidden = true;
 
+function convertHeightToInches(heightStr) {
+    let [feet, inches] = heightStr.split('-').map(Number);
+    return (feet * 12) + inches;
+}
+
 
 // Function to check if the guessed player matches the daily player
 function checkWin(playerName, row, player, playerData) {
@@ -427,17 +432,17 @@ function checkWin(playerName, row, player, playerData) {
                 row.cells[5].style.color = 'white';
             }
             if (randomPlayerHeight !== playerData.height) {
-                let difference = Math.abs(playerData.height - randomPlayerHeight);
+                let difference = Math.abs(convertHeightToInches(playerData.height) - convertHeightToInches(randomPlayerHeight));
                 if (difference <= 2) {
                     row.cells[5].style.backgroundColor = 'orange';
                     row.cells[5].style.color = 'white';
-                    if (playerData.height < randomPlayerHeight) {
+                    if (convertHeightToInches(playerData.height) < convertHeightToInches(randomPlayerHeight)) {
                         row.cells[5].innerHTML += '↑';
                     } else {
                         row.cells[5].innerHTML += '↓';
                     }
                 } else {
-                    if (playerData.height < randomPlayerHeight) {
+                    if (convertHeightToInches(playerData.height) < convertHeightToInches(randomPlayerHeight)) {
                         row.cells[5].innerHTML += '↑';
                     } else {
                         row.cells[5].innerHTML += '↓';

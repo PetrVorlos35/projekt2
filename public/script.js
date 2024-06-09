@@ -154,6 +154,11 @@ playAgainBtn.hidden = true;
 const popupBtn = document.getElementById('popupBtn');
 popupBtn.hidden = true;
 
+function convertHeightToInches(heightStr) {
+    let [feet, inches] = heightStr.split('-').map(Number);
+    return (feet * 12) + inches;
+}
+
 function checkWin(playerName, row, player, playerData) {
   console.log(randomPlayerName);
   console.log(playerName);
@@ -199,17 +204,20 @@ function checkWin(playerName, row, player, playerData) {
               row.cells[5].style.color = 'white';
           }
           if (randomPlayerHeight != playerData.height) {
-              let difference = Math.abs(playerData.height - randomPlayerHeight);
+              let difference = Math.abs(convertHeightToInches(playerData.height) - convertHeightToInches(randomPlayerHeight));
+              console.log(convertHeightToInches(playerData.height));
+              console.log(convertHeightToInches(randomPlayerHeight));
+              console.log(difference);
               if (difference <= 2) {
                   row.cells[5].style.backgroundColor = 'orange';
                   row.cells[5].style.color = 'white';
-                  if (playerData.height < randomPlayerHeight) {
+                  if (convertHeightToInches(playerData.height) < convertHeightToInches(randomPlayerHeight)) {
                       row.cells[5].innerHTML += '↑';
                   } else {
                       row.cells[5].innerHTML += '↓';
                   }
               } else {
-                  if (playerData.height < randomPlayerHeight) {
+                  if (convertHeightToInches(playerData.height) < convertHeightToInches(randomPlayerHeight)) {
                       row.cells[5].innerHTML += '↑';
                   } else {
                       row.cells[5].innerHTML += '↓';

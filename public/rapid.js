@@ -94,6 +94,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let score = 0;
 
+    function convertHeightToInches(heightStr) {
+        let [feet, inches] = heightStr.split('-').map(Number);
+        return (feet * 12) + inches;
+    }
+
 
     function checkWin(playerName, row, playerData) {
         if (randomPlayerName === playerName) {
@@ -130,17 +135,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 row.cells[5].style.backgroundColor = 'green';
                 row.cells[5].style.color = 'white';
             } else {
-                let difference = Math.abs(playerData.height - randomPlayerHeight);
+                let difference = Math.abs(convertHeightToInches(playerData.height) - convertHeightToInches(randomPlayerHeight));
                 if (difference <= 2) {
                     row.cells[5].style.backgroundColor = 'orange';
                     row.cells[5].style.color = 'white';
-                    if (playerData.height < randomPlayerHeight) {
+                    if (convertHeightToInches(playerData.height) < convertHeightToInches(randomPlayerHeight)) {
                         row.cells[5].innerHTML += '↑';
                     } else {
                         row.cells[5].innerHTML += '↓';
                     }
                 } else {
-                    if (playerData.height < randomPlayerHeight) {
+                    if (convertHeightToInches(playerData.height) < convertHeightToInches(randomPlayerHeight)) {
                         row.cells[5].innerHTML += '↑';
                     } else {
                         row.cells[5].innerHTML += '↓';
