@@ -110,21 +110,21 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('score').textContent = `Score: ${score}`;
             return true;
         } else {
-            if (playerData.jersey_number === randomPlayerNo) {
+            if (playerData.jersey_number === Number(randomPlayerNo)) {
                 row.cells[6].style.backgroundColor = 'green';
                 row.cells[6].style.color = 'white';
             } else {
-                let difference = Math.abs(playerData.jersey_number - randomPlayerNo);
+                let difference = Math.abs(playerData.jersey_number - Number(randomPlayerNo));
                 if (difference <= 2) {
                     row.cells[6].style.backgroundColor = 'orange';
                     row.cells[6].style.color = 'white';
-                    if (playerData.jersey_number < randomPlayerNo) {
+                    if (playerData.jersey_number < Number(randomPlayerNo)) {
                         row.cells[6].innerHTML += '↑';
                     } else {
                         row.cells[6].innerHTML += '↓';
                     }
                 } else {
-                    if (playerData.jersey_number < randomPlayerNo) {
+                    if (playerData.jersey_number < Number(randomPlayerNo)) {
                         row.cells[6].innerHTML += '↑';
                     } else {
                         row.cells[6].innerHTML += '↓';
